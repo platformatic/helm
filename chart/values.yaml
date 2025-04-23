@@ -245,9 +245,9 @@ services:
       pullPolicy: Always
       tag: "latest"
     env:
-      PLT_SERVER_ADDRESS: "0.0.0.0"
+      PLT_DEV_MODE: true
       PLT_PORT: 3000
-      PLT_LOGGER_LEVEL: "warn"
+      PLT_LOGGER_LEVEL: "debug"
       PLT_K8S_PROVIDER: "k8s"
 
       PLT_K8S_INSTALLED_NAMESPACE: "platformatic"
@@ -258,14 +258,7 @@ services:
       PLT_DEFAULT_MACHINE_CPU_COUNT: 1
       PLT_DEFAULT_MACHINE_MEMORY_MB: 512
 
-      PLT_DEPLOY_IMAGE: "ghcr.io/platformatic/plt-zio-paperone-2"
-      PLT_DEPLOY_TAG: "latest"
-      PLT_DEPLOY_IMAGE_PULL_SECRET_NAME: "image-pull-secret"
-
       PLT_DISABLE_EVENT_EXPORT: false
-
-    secrets:
-      PLT_MACHINIST_GITHUB_TOKEN: ""
 
     resources:
       limits:
