@@ -1,0 +1,109 @@
+{{- range $service, $val := .Values.services }}
+{{- if .deploy }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace | default "platformatic" }}
+  labels:
+    {{- include "application.labels" $ | nindent 4 }}
+    {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
+spec:
+  {{- if not .autoscaling.enabled }}
+  replicas: {{ .replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 6 }}
+  template:
+    metadata:
+      {{- with .podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- with .podLabels }}
+        {{- toYaml .| nindent 8 }}
+        {{- end }}
+        {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 8 }}
+    spec:
+      {{- with $.Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ $.Values.imagePullSecret.name | default "image-pull-secret" }}
+      {{- end }}
+      {{- with .volumes }}
+      volumes:
+      {{- range $volume, $value := . }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}-pvc
+      {{- end }}
+      {{- end }}
+      serviceAccountName: {{ include "application.serviceAccountName" $ }}
+      securityContext:
+        {{- toYaml .podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .name }}
+          securityContext:
+            {{- toYaml .securityContext | nindent 12 }}
+          image: "{{ .image.repository }}:{{ .image.tag | default "latest" }}"
+          imagePullPolicy: {{ .image.pullPolicy | default "IfNotPresent" }}
+          {{- if or .env .secrets }}
+          env:
+            {{- range $key, $value := .env }}
+            - name: '{{ $key }}'
+              value: '{{ $value }}'
+            {{- end }}
+            {{- range $key, $value := .secrets }}
+            - name: '{{ $key }}'
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $val.name }}
+                  key: '{{ $key }}'
+            {{- end }}
+          {{- end }}
+          {{- if .command }}
+          command:
+            {{- toYaml .command | nindent 12 }}
+          {{- end }}
+          {{- if .workingDir }}
+          workingDir: {{ .workingDir }}
+          {{- end }}
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: {{ .service.targetPort | default 3000 }}
+          livenessProbe: {{- if .healthchecks.livenessProbe }}{{ toYaml .healthchecks.livenessProbe | nindent 12 }}{{- else }}
+            httpGet:
+              path: /
+              port: http
+            {{- end }}
+          readinessProbe: {{- if .healthchecks.readinessProbe }}{{ toYaml .healthchecks.readinessProbe | nindent 12 }}{{- else }}
+            httpGet:
+              path: /
+              port: http
+            {{- end }}
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+          {{- with .volumes }}
+          volumeMounts:
+          {{- range $volume, $value := . }}
+            - name: {{ .name }}
+              mountPath: {{ .path }}
+          {{- end }}
+          {{- end }}
+      {{- with .nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+{{- end }}

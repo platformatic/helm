@@ -1,0 +1,22 @@
+{{- range $service, $val := .Values.services }}
+{{- if .deploy }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .name }}-test"
+  namespace: {{ $.Values.namespace | default "platformatic" }}
+  labels:
+    {{- include "application.labels" $ | nindent 4 }}
+    {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .name }}:{{ .service.port }}']
+  restartPolicy: Never
+{{- end }}
+{{- end }}

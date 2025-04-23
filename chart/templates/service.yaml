@@ -1,0 +1,30 @@
+{{- range $service, $val := .Values.services }}
+{{- if .deploy }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace | default "platformatic" }}
+  labels:
+    {{- include "application.labels" $ | nindent 4 }}
+    {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
+  {{ if eq "gcp" $.Values.cloud }}
+  annotations:
+    cloud.google.com/backend-config: '{"default": "platformatic"}'
+  {{- end }}
+spec:
+  type: {{ .service.type }}
+  ports:
+    - port: {{ .service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 9090
+      targetPort: 9090
+      protocol: TCP
+      name: metrics
+  selector:
+    {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
+{{- end }}
+{{- end }}

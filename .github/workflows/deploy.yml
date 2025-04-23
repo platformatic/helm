@@ -1,0 +1,42 @@
+name: 'Deploy'
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        type: choice
+        description: 'Environment to Deploy?'
+        options: 
+        # - development
+        - production
+
+jobs:
+# Initialize
+  init:
+    name: 'Initialize'
+    uses: platformatic/actions/.github/workflows/init.yml@main
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+    secrets: inherit
+
+# Helm
+  helm:
+    name: 'Helm'
+    needs: [init]
+    uses: platformatic/actions/.github/workflows/helm-push.yml@main
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      HELM_DIRECTORY: './chart'
+      REGISTRY: gcr
+      VISIBILITY: private
+    secrets: inherit
+
+# Clean Up
+  cleanup:
+    name: 'Clean Up'
+    if: always()
+    needs: [init, helm]
+    uses: platformatic/actions/.github/workflows/cleanup.yml@main
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+    secrets: inherit

@@ -1,0 +1,280 @@
+cloud: ""
+namespace: platformatic
+
+serviceAccount:
+  create: true
+  name: "platformatic"
+  annotations: {}
+
+imagePullSecret:
+  name: "image-pull-secret"
+  registry: ghcr.io
+  user: ""
+  token: ""
+
+ingress:
+  enabled: false
+
+services:
+  icc:
+    name: icc
+    deploy: true
+    replicaCount: 1
+    podAnnotations: {}
+    podSecurityContext: {}
+    monitor:
+      enabled: true
+    healthchecks:
+      livenessProbe:
+        httpGet:
+          path: /api/status
+          port: http
+        failureThreshold: 5
+        initialDelaySeconds: 40
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      readinessProbe:
+        httpGet:
+          path: /api/status
+          port: http
+        failureThreshold: 5
+        initialDelaySeconds: 40
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 100
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    image:
+      repository: ghcr.io/platformatic/plt-icc-3
+      pullPolicy: Always
+      tag: "latest"
+    env:
+      # Main service
+      DEMO_LOGIN: "true"
+      DEV: false
+      DEV_K8S: false
+      PORT: "3042"
+      PLT_MAIN_URL: "http://icc.platformatic.svc.cluster.local"
+      VITE_API_BASE_URL: "http://icc.platformatic.svc.cluster.local"
+      VITE_SERVER_URL: "http://icc.platformatic.svc.cluster.local"
+      VITE_TERMS_VERSION: 1
+      VITE_DEMO_LOGIN: "DEMO"
+      VITE_SUPPORTED_LOGINS: "demo"
+      PLT_METRICS_PROMETHEUS_URL: "http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090"
+      PLT_HOT_RELOAD: "false"
+      PLT_MAIN_LOGGER_LEVEL: "warn"
+      PLT_SERVICES_WITH_UPDATE_ROUTE: 'cluster-manager,trafficante'
+
+      # Auth service
+      PLT_AUTH_APPLY_MIGRATIONS: "true"
+      PLT_AUTH_TYPESCRIPT: "false"
+
+      # User Manager
+      PLT_USER_MANAGER_APPLY_MIGRATIONS: "true"
+      PLT_USER_MANAGER_TYPESCRIPT: "false"
+
+      # Risk Service
+      PLT_RISK_SERVICE_LOGGER_LEVEL: "warn"
+      PLT_RISK_SERVICE_TRACE_ID_EXPIRE: 120
+
+      # Risk Manager storage
+      PLT_RISK_MANAGER_LOGGER_LEVEL: info
+
+      # Risk Cold Service
+      PLT_COLD_STORAGE_LOGGER_LEVEL: "warn"
+
+      # Control Plane
+      PLT_COMPENDIUM_HOST: "0.0.0.0"
+      PLT_COMPENDIUM_PORT: 9998
+      PLT_COMPENDIUM_URL: "http://compendium.plt.local"
+      PLT_CONTROL_PLANE_LOG_LEVEL: "warn"
+      PLT_MACHINIST_HOST: "http://machinist.platformatic.svc.cluster.local"
+      PLT_MACHINIST_NAMESPACE: "platformatic"
+      PLT_MAIN_APPS_PUBLIC_DOMAIN: "svcs.gw.plt"
+      PLT_PREVIEW_APPS_PUBLIC_DOMAIN: "svcs-preview.gw.plt"
+      PLT_CONTROL_PLANE_EXPORTABLES_DIR: "/tmp/exportables"
+      PLT_ZIO_MAIN_PORT: 3042
+      PLT_ZIO_MANAGEMENT_PORT: 4042
+      PLT_CONTROL_PLANE_SECRETS_STORAGE_PROVIDER: "vault"
+      PLT_CONTROL_PLANE_COMPLIANCE_HOST: "http://compliance.plt.local"
+
+      # Compendium
+      PLT_COMPENDIUM_EXTERNAL_URL: "http://icc.platformatic.svc.cluster.local:3042/compendium"
+      PLT_COMPENDIUM_BUNDLES_STORAGE: "local"
+      PLT_COMPENDIUM_BUNDLES_DIR: "/tmp/bundles"
+      PLT_COMPENDIUM_LOGGER_LEVEL: "warn"
+      DEPLOY_TOKEN_EXPIRATION: 300000 # 5 minutes
+
+      # Log Proxy
+      PLT_LOG_PROXY_HOST: "0.0.0.0"
+      PLT_LOG_PROXY_PORT: 9999
+      PLT_LOG_PROXY_REDIS_LOGS_EXPIRE_SEC: 86400
+      PLT_LOG_PROXY_REDIS_LOGS_MAX_SIZE: 5000
+      PLT_LOG_PROXY_LOGGER_LEVEL: "error"
+
+      # Compliance
+      PLT_COMPLIANCE_RULES_DIR: "rules"
+
+      # Cron
+      PLT_CRON_LOGGER_LEVEL: "info"
+
+    secrets:
+      # Main service
+      PLT_GITHUB_OAUTH_CLIENT_ID: ""
+      PLT_GITHUB_OAUTH_CLIENT_SECRET: ""
+      PLT_GOOGLE_OAUTH_CLIENT_ID: ""
+      PLT_GOOGLE_OAUTH_CLIENT_SECRET: ""
+      PLT_MAIN_SESSION_SECRET_KEY: ""
+
+      # Cache Manager
+      PLT_CACHE_MANAGER_REDIS_CACHE_CONNECTION_STRING: "redis://cache-valkey.default.svc.cluster.local:6379"
+
+      # Risk Service
+      PLT_RISK_SERVICE_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
+      PLT_MAIN_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
+      PLT_LOG_PROXY_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
+
+      # Risk Manager
+      PLT_RISK_MANAGER_DATABASE_URL: "postgres://postgres:postgres@dbriskmanager-postgresql.default.svc.cluster.local/risk_manager"
+
+      # Risk Cold storage
+      PLT_COLD_STORAGE_DATABASE_URL: "postgres://postgres:postgres@dbcoldstorage-postgresql.default.svc.cluster.local/cold_storage"
+
+      # Auth service
+      PLT_AUTH_DATABASE_URL: "postgres://postgres:postgres@dbauth-postgresql.default.svc.cluster.local/auth"
+
+      # Activities
+      PLT_ACTIVITIES_DATABASE_URL: "postgres://postgres:postgres@dbactivities-postgresql.default.svc.cluster.local/activities"
+
+      # User Manager
+      PLT_USER_MANAGER_DATABASE_URL: "postgres://postgres:postgres@dbusermanager-postgresql.default.svc.cluster.local/user_manager"
+
+      # Compliance
+      PLT_COMPLIANCE_DATABASE_URL: "postgres://postgres:postgres@dbcompliance-postgresql.default.svc.cluster.local/compliance"
+
+      # Control Plane
+      PLT_CONTROL_PLANE_DATABASE_URL: "postgres://postgres:postgres@dbcontrolplane-postgresql.default.svc.cluster.local/control_plane"
+      PLT_CONTROL_PLANE_REDIS_CACHE_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
+      PLT_CONTROL_PLANE_VAULT_ADDR: ""
+      PLT_CONTROL_PLANE_VAULT_ROLE_ID: ""
+      PLT_CONTROL_PLANE_VAULT_SECRET_ID: ""
+      PLT_CONTROL_PLANE_VAULT_SECRETS_NAMESPACE: ""
+      PLT_CONTROL_PLANE_VAULT_SECRETS_ENGINE: ""
+      # Put your custom secrets prefix here. Example: "my-test-icc"
+      PLT_CONTROL_PLANE_VAULT_SECRETS_PREFIX: ""
+
+      # Compendium
+      PLT_COMPENDIUM_DATABASE_URL: "postgres://postgres:postgres@dbcompendium-postgresql.default.svc.cluster.local/compendium"
+      PLT_COMPENDIUM_AWS_BUNDLE_ACCESS_KEY_ID: ""
+      PLT_COMPENDIUM_AWS_BUNDLE_SECRET_ACCESS_KEY: ""
+      PLT_COMPENDIUM_AWS_BUNDLE_REGION: ""
+      PLT_COMPENDIUM_AWS_BUNDLE_BUCKET: ""
+
+      # Cluster Manager
+      PLT_CLUSTER_MANAGER_DATABASE_URL: "postgres://postgres:postgres@dbclustermanager-postgresql.default.svc.cluster.local/cluster_manager"
+
+      # Cron
+      PLT_CRON_DATABASE_URL: "postgres://postgres:postgres@dbcron-postgresql.default.svc.cluster.local/cron"
+
+      DEPLOY_TOKEN_PRIVATE_KEY: ""
+      DEPLOY_TOKEN_PUBLIC_KEY: ""
+
+      # Trafficante
+      PLT_TRAFFICANTE_LOGGER_LEVEL: "warn"
+      PLT_TRAFFICANTE_DATABASE_URL: "postgres://postgres:postgres@dbtrafficante-postgresql.default.svc.cluster.local/trafficante"
+      PLT_TRAFFICANTE_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
+
+    resources:
+      limits:
+        cpu: 2
+        memory: 2048Mi
+      requests:
+        cpu: 1
+        memory: 1024Mi
+    service:
+      type: NodePort
+      port: 80
+      targetPort: 3042
+
+  machinist:
+    name: machinist
+    deploy: true
+    replicaCount: 1
+    podAnnotations: {}
+    podSecurityContext: {}
+    monitor:
+      enabled: true
+    healthchecks:
+      livenessProbe:
+        httpGet:
+          path: /status
+          port: http
+        failureThreshold: 3
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      readinessProbe:
+        httpGet:
+          path: /status
+          port: http
+        failureThreshold: 3
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 5
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    image:
+      repository: ghcr.io/platformatic/plt-machinist-3
+      pullPolicy: Always
+      tag: "latest"
+    env:
+      PLT_SERVER_ADDRESS: "0.0.0.0"
+      PLT_PORT: 3000
+      PLT_LOGGER_LEVEL: "warn"
+      PLT_K8S_PROVIDER: "k8s"
+
+      PLT_K8S_INSTALLED_NAMESPACE: "platformatic"
+      PLT_K8S_STORAGE_CLASS: "local-path"
+      PLT_K8S_MACHINE_WAIT_TIMEOUT_MS: 180000
+
+      # TODO(mzugm) remove these after confirming machinist-3 fails if they are not recieved
+      PLT_DEFAULT_MACHINE_CPU_COUNT: 1
+      PLT_DEFAULT_MACHINE_MEMORY_MB: 512
+
+      PLT_DEPLOY_IMAGE: "ghcr.io/platformatic/plt-zio-paperone-2"
+      PLT_DEPLOY_TAG: "latest"
+      PLT_DEPLOY_IMAGE_PULL_SECRET_NAME: "image-pull-secret"
+
+      PLT_DISABLE_EVENT_EXPORT: false
+
+    secrets:
+      PLT_MACHINIST_GITHUB_TOKEN: ""
+
+    resources:
+      limits:
+        cpu: 1
+        memory: 1Gi
+      requests:
+        cpu: 0.5
+        memory: 512Mi
+    service:
+      type: NodePort
+      port: 80
+      targetPort: 3000
