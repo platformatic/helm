@@ -195,7 +195,7 @@ services:
       PLT_DEFAULT_MACHINE_CPU_COUNT: 1
       PLT_DEFAULT_MACHINE_MEMORY_MB: 512
 
-      PLT_DISABLE_EVENT_EXPORT: false
+      PLT_DISABLE_EVENT_EXPORT: true
 
     resources:
       limits:
