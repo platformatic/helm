@@ -76,6 +76,7 @@ services:
       DEV: true
       PLT_MAIN_URL: "http://icc.platformatic.svc.cluster.local:3042/main"
       PLT_MAIN_LOGGER_LEVEL: "info"
+      PLT_CONTROL_PLANE_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_API_BASE_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_SERVER_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_TERMS_VERSION: 1
