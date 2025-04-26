@@ -57,74 +57,49 @@ services:
       pullPolicy: Always
       tag: "latest"
     env:
+      # Shared
+      PORT: 3042
+      DEV_K8S: true
+      PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic.svc.cluster.local:3042/trafficante
+      PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic.svc.cluster.local:3042/activities
+      PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic.svc.cluster.local:3042/compliance
+      PLT_EXTERNAL_CRON_URL: http://icc.platformatic.svc.cluster.local:3042/cron
+      PLT_EXTERNAL_USER_MANAGER_URL: http://icc.platformatic.svc.cluster.local:3042/user-manager
+      PLT_EXTERNAL_RISK_MANAGER_URL: http://icc.platformatic.svc.cluster.local:3042/risk-manager
+      PLT_EXTERNAL_RISK_SERVICE_URL: http://icc.platformatic.svc.cluster.local:3042/risk-service
+      PLT_EXTERNAL_METRICS_URL: http://icc.platformatic.svc.cluster.local:3042/metrics
+      PLT_MAIN_SERVICE_URL: http://icc.platformatic.svc.cluster.local:3042/main
+      PLT_MACHINIST_URL: http://machinist.platformatic.svc.cluster.local
+
       # Main service
       DEMO_LOGIN: "true"
-      DEV: false
-      DEV_K8S: false
-      PORT: "3042"
-      PLT_MAIN_URL: "http://icc.platformatic.svc.cluster.local"
+      DEV: true
+      PLT_MAIN_URL: "http://icc.platformatic.svc.cluster.local:3042/main"
+      PLT_MAIN_LOGGER_LEVEL: "info"
       VITE_API_BASE_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_SERVER_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_TERMS_VERSION: 1
       VITE_DEMO_LOGIN: "DEMO"
       VITE_SUPPORTED_LOGINS: "demo"
-      PLT_METRICS_PROMETHEUS_URL: "http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090"
-      PLT_HOT_RELOAD: "false"
-      PLT_MAIN_LOGGER_LEVEL: "warn"
-      PLT_SERVICES_WITH_UPDATE_ROUTE: 'cluster-manager,trafficante'
 
-      # Auth service
-      PLT_AUTH_APPLY_MIGRATIONS: "true"
-      PLT_AUTH_TYPESCRIPT: "false"
+      # Metrics
+      PLT_METRICS_PROMETHEUS_URL: "http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090"
 
       # User Manager
       PLT_USER_MANAGER_APPLY_MIGRATIONS: "true"
       PLT_USER_MANAGER_TYPESCRIPT: "false"
-
-      # Risk Service
-      PLT_RISK_SERVICE_LOGGER_LEVEL: "warn"
-      PLT_RISK_SERVICE_TRACE_ID_EXPIRE: 120
-
-      # Risk Manager storage
-      PLT_RISK_MANAGER_LOGGER_LEVEL: info
-
-      # Risk Cold Service
-      PLT_COLD_STORAGE_LOGGER_LEVEL: "warn"
+      PLT_USER_MANAGER_SESSION_SECRET_KEY: "iNEU1LFsoWlUvWzkKOCwTyTsUQriyg8KmXxpQGxLXxU="
+      PLT_USER_MANAGER_SUPER_ADMIN_EMAIL: "demo@platformatic.dev"
 
       # Control Plane
-      PLT_COMPENDIUM_HOST: "0.0.0.0"
-      PLT_COMPENDIUM_PORT: 9998
-      PLT_COMPENDIUM_URL: "http://compendium.plt.local"
-      PLT_CONTROL_PLANE_LOG_LEVEL: "warn"
-      PLT_MACHINIST_HOST: "http://machinist.platformatic.svc.cluster.local"
-      PLT_MACHINIST_NAMESPACE: "platformatic"
-      PLT_MAIN_APPS_PUBLIC_DOMAIN: "svcs.gw.plt"
-      PLT_PREVIEW_APPS_PUBLIC_DOMAIN: "svcs-preview.gw.plt"
-      PLT_CONTROL_PLANE_EXPORTABLES_DIR: "/tmp/exportables"
-      PLT_ZIO_MAIN_PORT: 3042
-      PLT_ZIO_MANAGEMENT_PORT: 4042
-      PLT_CONTROL_PLANE_SECRETS_STORAGE_PROVIDER: "vault"
-      PLT_CONTROL_PLANE_COMPLIANCE_HOST: "http://compliance.plt.local"
-
-      # Compendium
-      PLT_COMPENDIUM_EXTERNAL_URL: "http://icc.platformatic.svc.cluster.local:3042/compendium"
-      PLT_COMPENDIUM_BUNDLES_STORAGE: "local"
-      PLT_COMPENDIUM_BUNDLES_DIR: "/tmp/bundles"
-      PLT_COMPENDIUM_LOGGER_LEVEL: "warn"
-      DEPLOY_TOKEN_EXPIRATION: 300000 # 5 minutes
-
-      # Log Proxy
-      PLT_LOG_PROXY_HOST: "0.0.0.0"
-      PLT_LOG_PROXY_PORT: 9999
-      PLT_LOG_PROXY_REDIS_LOGS_EXPIRE_SEC: 86400
-      PLT_LOG_PROXY_REDIS_LOGS_MAX_SIZE: 5000
-      PLT_LOG_PROXY_LOGGER_LEVEL: "error"
-
-      # Compliance
-      PLT_COMPLIANCE_RULES_DIR: "rules"
+      PLT_CONTROL_PLANE_LOG_LEVEL: "info"
+      PLT_CONTROL_PLANE_SECRET_KEY: "test"
 
       # Cron
       PLT_CRON_LOGGER_LEVEL: "info"
+
+      # Trafficante
+      PLT_TRAFFICANTE_LOGGER_LEVEL: "warn"
 
     secrets:
       # Main service
@@ -133,23 +108,6 @@ services:
       PLT_GOOGLE_OAUTH_CLIENT_ID: ""
       PLT_GOOGLE_OAUTH_CLIENT_SECRET: ""
       PLT_MAIN_SESSION_SECRET_KEY: ""
-
-      # Cache Manager
-      PLT_CACHE_MANAGER_REDIS_CACHE_CONNECTION_STRING: "redis://cache-valkey.default.svc.cluster.local:6379"
-
-      # Risk Service
-      PLT_RISK_SERVICE_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
-      PLT_MAIN_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
-      PLT_LOG_PROXY_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
-
-      # Risk Manager
-      PLT_RISK_MANAGER_DATABASE_URL: "postgres://postgres:postgres@dbriskmanager-postgresql.default.svc.cluster.local/risk_manager"
-
-      # Risk Cold storage
-      PLT_COLD_STORAGE_DATABASE_URL: "postgres://postgres:postgres@dbcoldstorage-postgresql.default.svc.cluster.local/cold_storage"
-
-      # Auth service
-      PLT_AUTH_DATABASE_URL: "postgres://postgres:postgres@dbauth-postgresql.default.svc.cluster.local/auth"
 
       # Activities
       PLT_ACTIVITIES_DATABASE_URL: "postgres://postgres:postgres@dbactivities-postgresql.default.svc.cluster.local/activities"
@@ -162,33 +120,11 @@ services:
 
       # Control Plane
       PLT_CONTROL_PLANE_DATABASE_URL: "postgres://postgres:postgres@dbcontrolplane-postgresql.default.svc.cluster.local/control_plane"
-      PLT_CONTROL_PLANE_REDIS_CACHE_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
-      PLT_CONTROL_PLANE_VAULT_ADDR: ""
-      PLT_CONTROL_PLANE_VAULT_ROLE_ID: ""
-      PLT_CONTROL_PLANE_VAULT_SECRET_ID: ""
-      PLT_CONTROL_PLANE_VAULT_SECRETS_NAMESPACE: ""
-      PLT_CONTROL_PLANE_VAULT_SECRETS_ENGINE: ""
-      # Put your custom secrets prefix here. Example: "my-test-icc"
-      PLT_CONTROL_PLANE_VAULT_SECRETS_PREFIX: ""
-
-      # Compendium
-      PLT_COMPENDIUM_DATABASE_URL: "postgres://postgres:postgres@dbcompendium-postgresql.default.svc.cluster.local/compendium"
-      PLT_COMPENDIUM_AWS_BUNDLE_ACCESS_KEY_ID: ""
-      PLT_COMPENDIUM_AWS_BUNDLE_SECRET_ACCESS_KEY: ""
-      PLT_COMPENDIUM_AWS_BUNDLE_REGION: ""
-      PLT_COMPENDIUM_AWS_BUNDLE_BUCKET: ""
-
-      # Cluster Manager
-      PLT_CLUSTER_MANAGER_DATABASE_URL: "postgres://postgres:postgres@dbclustermanager-postgresql.default.svc.cluster.local/cluster_manager"
 
       # Cron
       PLT_CRON_DATABASE_URL: "postgres://postgres:postgres@dbcron-postgresql.default.svc.cluster.local/cron"
 
-      DEPLOY_TOKEN_PRIVATE_KEY: ""
-      DEPLOY_TOKEN_PUBLIC_KEY: ""
-
       # Trafficante
-      PLT_TRAFFICANTE_LOGGER_LEVEL: "warn"
       PLT_TRAFFICANTE_DATABASE_URL: "postgres://postgres:postgres@dbtrafficante-postgresql.default.svc.cluster.local/trafficante"
       PLT_TRAFFICANTE_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
 
