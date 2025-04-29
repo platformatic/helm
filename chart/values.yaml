@@ -92,6 +92,10 @@ services:
       PLT_USER_MANAGER_SESSION_SECRET_KEY: "iNEU1LFsoWlUvWzkKOCwTyTsUQriyg8KmXxpQGxLXxU="
       PLT_USER_MANAGER_SUPER_ADMIN_EMAIL: "demo@platformatic.dev"
 
+      # Compliance
+      PLT_COMPLIANCE_LOGGER_LEVEL: "info"
+      PLT_COMPLIANCE_RULES_DIR: "./rules"
+
       # Control Plane
       PLT_CONTROL_PLANE_LOG_LEVEL: "info"
       PLT_CONTROL_PLANE_SECRET_KEY: "test"
