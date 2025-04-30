@@ -68,15 +68,14 @@ services:
       PLT_EXTERNAL_RISK_MANAGER_URL: http://icc.platformatic.svc.cluster.local:3042/risk-manager
       PLT_EXTERNAL_RISK_SERVICE_URL: http://icc.platformatic.svc.cluster.local:3042/risk-service
       PLT_EXTERNAL_METRICS_URL: http://icc.platformatic.svc.cluster.local:3042/metrics
-      PLT_MAIN_SERVICE_URL: http://icc.platformatic.svc.cluster.local:3042/main
+      PLT_MAIN_SERVICE_URL: http://main.plt.local
+      PLT_CONTROL_PLANE_URL: http://control-plane.plt.local
       PLT_MACHINIST_URL: http://machinist.platformatic.svc.cluster.local
 
       # Main service
       DEMO_LOGIN: "true"
       DEV: true
-      PLT_MAIN_URL: "http://icc.platformatic.svc.cluster.local:3042/main"
       PLT_MAIN_LOGGER_LEVEL: "info"
-      PLT_CONTROL_PLANE_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_API_BASE_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_SERVER_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_TERMS_VERSION: 1
