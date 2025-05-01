@@ -75,7 +75,7 @@ services:
       # Main service
       DEMO_LOGIN: "true"
       DEV: true
-      PLT_MAIN_LOGGER_LEVEL: "info"
+      PLT_MAIN_LOGGER_LEVEL: "warn"
       VITE_API_BASE_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_SERVER_URL: "http://icc.platformatic.svc.cluster.local"
       VITE_TERMS_VERSION: 1
@@ -92,11 +92,11 @@ services:
       PLT_USER_MANAGER_SUPER_ADMIN_EMAIL: "demo@platformatic.dev"
 
       # Compliance
-      PLT_COMPLIANCE_LOGGER_LEVEL: "info"
+      PLT_COMPLIANCE_LOGGER_LEVEL: "warn"
       PLT_COMPLIANCE_RULES_DIR: "./rules"
 
       # Control Plane
-      PLT_CONTROL_PLANE_LOG_LEVEL: "info"
+      PLT_CONTROL_PLANE_LOG_LEVEL: "warn"
 
       # Cron
       PLT_CRON_LOGGER_LEVEL: "info"
