@@ -97,7 +97,6 @@ services:
 
       # Control Plane
       PLT_CONTROL_PLANE_LOG_LEVEL: "info"
-      PLT_CONTROL_PLANE_SECRET_KEY: "test"
 
       # Cron
       PLT_CRON_LOGGER_LEVEL: "info"
@@ -124,6 +123,8 @@ services:
 
       # Control Plane
       PLT_CONTROL_PLANE_DATABASE_URL: "postgres://postgres:postgres@dbcontrolplane-postgresql.default.svc.cluster.local/control_plane"
+      # Comma separated list of secret keys
+      PLT_CONTROL_PLANE_SECRET_KEYS: "test"
 
       # Cron
       PLT_CRON_DATABASE_URL: "postgres://postgres:postgres@dbcron-postgresql.default.svc.cluster.local/cron"
