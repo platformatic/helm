@@ -137,7 +137,7 @@ services:
       PLT_TRAFFICANTE_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
 
       # Scaler
-      PLT_SCALER_DATABASE_URL: "postgres://postgres:postgres@dbcron-postgresql.default.svc.cluster.local/scaler"
+      PLT_SCALER_DATABASE_URL: "postgres://postgres:postgres@dbscaler-postgresql.default.svc.cluster.local/scaler"
 
     resources:
       limits:
