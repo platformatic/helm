@@ -104,6 +104,9 @@ services:
       # Trafficante
       PLT_TRAFFICANTE_LOGGER_LEVEL: "warn"
 
+      # Scaler
+      PLT_SCALER_LOGGER_LEVEL: "info"
+
     secrets:
       # Main service
       PLT_GITHUB_OAUTH_CLIENT_ID: ""
@@ -132,6 +135,9 @@ services:
       # Trafficante
       PLT_TRAFFICANTE_DATABASE_URL: "postgres://postgres:postgres@dbtrafficante-postgresql.default.svc.cluster.local/trafficante"
       PLT_TRAFFICANTE_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
+
+      # Scaler
+      PLT_SCALER_DATABASE_URL: "postgres://postgres:postgres@dbcron-postgresql.default.svc.cluster.local/scaler"
 
     resources:
       limits:
