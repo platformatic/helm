@@ -116,28 +116,28 @@ services:
       PLT_MAIN_SESSION_SECRET_KEY: ""
 
       # Activities
-      PLT_ACTIVITIES_DATABASE_URL: "postgres://postgres:postgres@dbactivities-postgresql.default.svc.cluster.local/activities"
+      PLT_ACTIVITIES_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/activities"
 
       # User Manager
-      PLT_USER_MANAGER_DATABASE_URL: "postgres://postgres:postgres@dbusermanager-postgresql.default.svc.cluster.local/user_manager"
+      PLT_USER_MANAGER_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/user_manager"
 
       # Compliance
-      PLT_COMPLIANCE_DATABASE_URL: "postgres://postgres:postgres@dbcompliance-postgresql.default.svc.cluster.local/compliance"
+      PLT_COMPLIANCE_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/compliance"
 
       # Control Plane
-      PLT_CONTROL_PLANE_DATABASE_URL: "postgres://postgres:postgres@dbcontrolplane-postgresql.default.svc.cluster.local/control_plane"
+      PLT_CONTROL_PLANE_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/control_plane"
       # Comma separated list of secret keys
       PLT_CONTROL_PLANE_SECRET_KEYS: "test"
 
       # Cron
-      PLT_CRON_DATABASE_URL: "postgres://postgres:postgres@dbcron-postgresql.default.svc.cluster.local/cron"
+      PLT_CRON_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/cron"
 
       # Trafficante
       PLT_TRAFFICANTE_DATABASE_URL: "postgres://postgres:postgres@dbtrafficante-postgresql.default.svc.cluster.local/trafficante"
       PLT_TRAFFICANTE_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
 
       # Scaler
-      PLT_SCALER_DATABASE_URL: "postgres://postgres:postgres@dbscaler-postgresql.default.svc.cluster.local/scaler"
+      PLT_SCALER_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/scaler"
 
     resources:
       limits:
