@@ -1,6 +1,6 @@
 {{- range $service, $val := .Values.services }}
-{{- if .monitor.enabled -}}
 ---
+{{- if .monitor.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
