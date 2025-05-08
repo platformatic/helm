@@ -108,6 +108,9 @@ services:
       PLT_SCALER_LOGGER_LEVEL: "info"
 
     secrets:
+      # Shared
+      PLT_ICC_SESSION_SECRET: "session-secret"
+
       # Main service
       PLT_GITHUB_OAUTH_CLIENT_ID: ""
       PLT_GITHUB_OAUTH_CLIENT_SECRET: ""
