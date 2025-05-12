@@ -15,6 +15,11 @@ imagePullSecret:
 ingress:
   enabled: false
 
+wattpro:
+  monitor:
+    enable: true
+    name: "wattpro"
+
 services:
   icc:
     name: icc

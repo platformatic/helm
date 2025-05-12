@@ -1,31 +1,11 @@
+{{- if .Values.wattpro.monitor.enable }}
+---
+{{- include "prometheus.servicemonitor" (list $ .Values.wattpro.monitor) }}
+{{- end }}
+
 {{- range $service, $val := .Values.services }}
 ---
 {{- if .monitor.enabled -}}
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: {{ .name }}
-  namespace: {{ $.Values.namespace | default "platformatic" }}
-  labels:
-    {{- include "application.labels" $ | nindent 4 }}
-    {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
-
-spec:
-  selector:
-    matchLabels:
-      {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 6 }}
-  endpoints:
-    - port: "metrics"
-      honorLabels: false
-      interval: "15s"
-      relabelings:
-        - action: replace
-          sourceLabels:
-            - __meta_kubernetes_pod_label_app_kubernetes_io_name
-          targetLabel: name
-        - action: replace
-          sourceLabels:
-            - __meta_kubernetes_pod_label_app_kubernetes_io_instance
-          targetLabel: instance
+{{- include "prometheus.servicemonitor" (list $ .) }}
 {{- end }}
 {{- end }}
