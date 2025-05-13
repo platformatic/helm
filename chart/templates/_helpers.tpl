@@ -61,9 +61,5 @@ app.kubernetes.io/partition: platformatic
 Create the name of the service account to use
 */}}
 {{- define "application.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default "platformatic" .Values.serviceAccount.name }}
-{{- else }}
-{{- default "platformatic" .Values.serviceAccount.name }}
-{{- end }}
+platformatic
 {{- end }}
