@@ -187,6 +187,7 @@ services:
     podSecurityContext: {}
     monitor:
       enabled: true
+    serviceAccountName: "plt-pod-manager"
     healthchecks:
       livenessProbe:
         httpGet:
