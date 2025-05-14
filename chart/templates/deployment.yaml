@@ -40,7 +40,7 @@ spec:
             claimName: {{ .name }}-pvc
       {{- end }}
       {{- end }}
-      serviceAccountName: {{ include "application.serviceAccountName" $ }}
+      serviceAccountName: {{ .serviceAccountName | default (include "application.serviceAccountName" $) }}
       securityContext:
         {{- toYaml .podSecurityContext | nindent 8 }}
       containers:
