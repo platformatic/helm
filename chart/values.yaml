@@ -17,6 +17,7 @@ serviceAccounts:
           - replicasets
           - replicationcontrollers
           - ingresses
+          - services
       update:
         apiGroups:
           - ""
