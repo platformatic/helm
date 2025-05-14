@@ -26,6 +26,7 @@ serviceAccounts:
           - deployments
           - replicasets
           - replicationcontrollers
+          - pods
 
 imagePullSecret:
   name: "image-pull-secret"
