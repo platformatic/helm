@@ -1,6 +1,6 @@
 {{- if .Values.wattpro.monitor.enable }}
 ---
-{{- include "prometheus.servicemonitor" (list $ .Values.wattpro.monitor) }}
+{{- include "prometheus.podmonitor" (list $ .Values.wattpro.monitor) }}
 {{- end }}
 
 {{- range $service, $val := .Values.services }}

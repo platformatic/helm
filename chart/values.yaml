@@ -41,6 +41,8 @@ wattpro:
   monitor:
     enable: true
     name: "wattpro"
+    matchLabels:
+      platformatic.dev/monitor: "prometheus"
 
 services:
   icc:
