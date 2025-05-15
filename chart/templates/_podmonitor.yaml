@@ -1,0 +1,35 @@
+{{- define "prometheus.podmonitor" }}
+{{- $ := index . 0 }}
+
+{{- with index . 1 }}
+
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace | default "platformatic" }}
+  labels:
+    {{- include "application.labels" $ | nindent 4 }}
+    {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- toYaml .matchLabels | nindent 6 }}
+  podMetricsEndpoints:
+  - honorLabels: false
+    interval: 15s
+    port: {{ .port }}
+    relabelings:
+    - action: replace
+      sourceLabels:
+      - __meta_kubernetes_pod_label_app_kubernetes_io_name
+      targetLabel: name
+    - action: replace
+      sourceLabels:
+      - __meta_kubernetes_pod_label_app_kubernetes_io_instance
+      targetLabel: instance
+  namespaceSelector:
+    matchNames:
+      - {{ $.Values.namespace | default "platformatic" }}
+{{- end }}
+{{- end }}
