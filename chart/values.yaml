@@ -97,7 +97,7 @@ services:
       PLT_EXTERNAL_METRICS_URL: http://icc.platformatic.svc.cluster.local:3042/metrics
       PLT_MAIN_SERVICE_URL: http://main.plt.local
       PLT_CONTROL_PLANE_URL: http://control-plane.plt.local
-      PLT_MACHINIST_URL: http://machinist.platformatic.svc.cluster.local
+      PLT_MACHINIST_URL: http://machinist.platformatic.svc.cluster.local:3042
 
       # Main service
       DEMO_LOGIN: "true"
