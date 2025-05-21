@@ -43,6 +43,7 @@ wattpro:
     name: "wattpro"
     matchLabels:
       platformatic.dev/monitor: "prometheus"
+    port: "metrics"
 
 services:
   icc:
