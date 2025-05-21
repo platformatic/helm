@@ -137,6 +137,8 @@ services:
       # Scaler
       PLT_SCALER_LOGGER_LEVEL: "info"
 
+      # Risk service
+      PLT_RISK_SERVICE_LOGGER_LEVEL: "warn"
     secrets:
       # Shared
       PLT_ICC_SESSION_SECRET: "session-secret"
