@@ -98,6 +98,7 @@ services:
       PLT_EXTERNAL_RISK_MANAGER_URL: http://icc.platformatic.svc.cluster.local:3042/risk-manager
       PLT_EXTERNAL_RISK_SERVICE_URL: http://icc.platformatic.svc.cluster.local:3042/risk-service
       PLT_EXTERNAL_METRICS_URL: http://icc.platformatic.svc.cluster.local:3042/metrics
+      PLT_EXTERNAL_SCALER_URL: http://icc.platformatic.svc.cluster.local:3042/scaler
       PLT_MAIN_SERVICE_URL: http://main.plt.local
       PLT_CONTROL_PLANE_URL: http://control-plane.plt.local
       PLT_MACHINIST_URL: http://machinist.platformatic.svc.cluster.local:3042
