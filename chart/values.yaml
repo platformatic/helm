@@ -137,6 +137,9 @@ services:
 
       # Scaler
       PLT_SCALER_LOGGER_LEVEL: "info"
+      PLT_SCALER_COOLDOWN: 30,
+      PLT_SCALER_PERIODIC_TRIGGER: 20,
+      PLT_METRICS_TIME_RANGE: 30
 
       # Risk service
       PLT_RISK_SERVICE_LOGGER_LEVEL: "warn"
