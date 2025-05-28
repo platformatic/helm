@@ -144,6 +144,9 @@ services:
 
       # Risk service
       PLT_RISK_SERVICE_LOGGER_LEVEL: "warn"
+
+      # Risk Cold Storage
+      PLT_COLD_STORAGE_LOGGER_LEVEL: "warn"
     secrets:
       # Shared
       PLT_ICC_SESSION_SECRET: "session-secret"
@@ -174,11 +177,12 @@ services:
 
       # Trafficante
       PLT_TRAFFICANTE_DATABASE_URL: "postgres://postgres:postgres@dbtrafficante-postgresql.default.svc.cluster.local/trafficante"
-      PLT_TRAFFICANTE_REDIS_CONNECTION_STRING: "redis://valkey-master.default.svc.cluster.local:6379"
 
       # Scaler
       PLT_SCALER_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/scaler"
 
+      # Risk Cold Storage
+      PLT_COLD_STORAGE_DATABASE_URL: postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/cold_storage
     resources:
       limits:
         cpu: 2
