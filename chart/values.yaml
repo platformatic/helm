@@ -102,6 +102,12 @@ services:
       # Compliance
       PLT_COMPLIANCE_RULES_DIR: "./rules"
 
+      # Risk service
+      PLT_RISK_SERVICE_LOGGER_LEVEL: "info"
+
+      # Risk Cold Storage
+      PLT_COLD_STORAGE_LOGGER_LEVEL: "info"
+
     secrets:
       # Shared
       PLT_ICC_SESSION_SECRET: ""
