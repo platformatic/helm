@@ -85,11 +85,12 @@ services:
     image:
       repository: ghcr.io/platformatic/plt-icc-3
       pullPolicy: Always
-      tag: "latest"
+      tag: "demo"
     env:
       # Shared
       PORT: 3042
       DEV_K8S: true
+
       PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic.svc.cluster.local:3042/trafficante
       PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic.svc.cluster.local:3042/activities
       PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic.svc.cluster.local:3042/compliance
@@ -235,7 +236,7 @@ services:
     image:
       repository: ghcr.io/platformatic/plt-machinist-3
       pullPolicy: Always
-      tag: "latest"
+      tag: "demo"
     env:
       PLT_DEV_MODE: true
       PLT_PORT: 3000
