@@ -49,7 +49,12 @@ services:
   icc:
     name: icc
     deploy: true
-    replicaCount: 1
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
     podAnnotations: {}
     podSecurityContext: {}
     monitor:
@@ -76,117 +81,49 @@ services:
     nodeSelector: {}
     tolerations: []
     affinity: {}
-    autoscaling:
-      enabled: false
-      minReplicas: 1
-      maxReplicas: 100
-      targetCPUUtilizationPercentage: 80
-      targetMemoryUtilizationPercentage: 80
     image:
       repository: ghcr.io/platformatic/plt-icc-3
       pullPolicy: Always
       tag: "demo"
     env:
-      # Shared
-      PORT: 3042
-      DEV_K8S: true
-      PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic/trafficante
-      PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic/activities
-      PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic/compliance
-      PLT_EXTERNAL_CRON_URL: http://icc.platformatic/cron
-      PLT_EXTERNAL_USER_MANAGER_URL: http://icc.platformatic/user-manager
-      PLT_EXTERNAL_RISK_MANAGER_URL: http://icc.platformatic/risk-manager
-      PLT_EXTERNAL_RISK_SERVICE_URL: http://icc.platformatic/risk-service
-      PLT_EXTERNAL_METRICS_URL: http://icc.platformatic/metrics
-      PLT_EXTERNAL_SCALER_URL: http://icc.platformatic/scaler
-      PLT_MAIN_SERVICE_URL: http://main.plt.local
-      PLT_CONTROL_PLANE_URL: http://control-plane.plt.local
-      PLT_COMPLIANCE_URL: http://compliance.plt.local
-      PLT_MACHINIST_URL: http://machinist.platformatic
-      PLT_FEATURE_CACHE_RECOMMENDATIONS: "false"
-      PLT_FEATURE_RISK_SERVICE_DUMP: "false"
-      PLT_FEATURE_FFC: "false"
-      PLT_CRON_DISABLE_ICC_JOBS: "false"
-
-      # Main service
-      DEMO_LOGIN: "true"
-      DEV: true
-      PLT_MAIN_LOGGER_LEVEL: "info"
-      VITE_API_BASE_URL: "https://icc.plt"
-      VITE_SERVER_URL: "https://icc.plt"
-      VITE_TERMS_VERSION: 1
-      VITE_DEMO_LOGIN: "DEMO"
-      VITE_SUPPORTED_LOGINS: "demo"
-
-      # Metrics
-      PLT_METRICS_PROMETHEUS_URL: "http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090"
-
-      # User Manager
-      PLT_USER_MANAGER_APPLY_MIGRATIONS: "true"
-      PLT_USER_MANAGER_TYPESCRIPT: "false"
-      PLT_USER_MANAGER_SUPER_ADMIN_EMAIL: "demo@platformatic.dev"
-
-      # Compliance
-      PLT_COMPLIANCE_LOGGER_LEVEL: "info"
-      PLT_COMPLIANCE_RULES_DIR: "./rules"
-
-      # Control Plane
-      PLT_CONTROL_PLANE_LOG_LEVEL: "info"
-
-      # Cron
-      PLT_CRON_LOGGER_LEVEL: "info"
-
-      # Trafficante
-      PLT_TRAFFICANTE_LOGGER_LEVEL: "info"
-
-      # Scaler
-      PLT_SCALER_LOGGER_LEVEL: "info"
-      PLT_SCALER_COOLDOWN: 30
-      PLT_SCALER_PERIODIC_TRIGGER: 20
-      PLT_METRICS_TIME_RANGE: 30
-
-      # Risk service
-      PLT_RISK_SERVICE_LOGGER_LEVEL: "info"
-
-      # Risk Cold Storage
-      PLT_COLD_STORAGE_LOGGER_LEVEL: "info"
+      PLT_MAIN_LOGGER_LEVEL: "warn"
+      PLT_COMPLIANCE_LOGGER_LEVEL: "warn"
+      PLT_CRON_LOGGER_LEVEL: "warn"
+      PLT_CONTROL_PLANE_LOG_LEVEL: "warn"
+      PLT_TRAFFICANTE_LOGGER_LEVEL: "warn"
+      PLT_SCALER_LOGGER_LEVEL: "warn"
+      PLT_RISK_SERVICE_LOGGER_LEVEL: "warn"
+      PLT_COLD_STORAGE_LOGGER_LEVEL: "warn"
+      PLT_SCALER_COOLDOWN: 300
+      PLT_SCALER_PERIODIC_TRIGGER: 60
+      PLT_METRICS_TIME_RANGE: 60
     secrets:
       # Shared
-      PLT_ICC_SESSION_SECRET: "session-secret"
-
+      PLT_ICC_SESSION_SECRET: ""
       # Main service
       PLT_GITHUB_OAUTH_CLIENT_ID: ""
       PLT_GITHUB_OAUTH_CLIENT_SECRET: ""
       PLT_GOOGLE_OAUTH_CLIENT_ID: ""
       PLT_GOOGLE_OAUTH_CLIENT_SECRET: ""
       PLT_MAIN_SESSION_SECRET_KEY: ""
-
       # Activities
-      PLT_ACTIVITIES_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/activities"
-
+      PLT_ACTIVITIES_DATABASE_URL: ""
       # User Manager
-      PLT_USER_MANAGER_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/user_manager"
-      PLT_USER_MANAGER_SESSION_SECRET_KEY: "iNEU1LFsoWlUvWzkKOCwTyTsUQriyg8KmXxpQGxLXxU="
-
+      PLT_USER_MANAGER_DATABASE_URL: ""
+      PLT_USER_MANAGER_SESSION_SECRET_KEY: ""
       # Compliance
-      PLT_COMPLIANCE_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/compliance"
-
+      PLT_COMPLIANCE_DATABASE_URL: ""
       # Control Plane
-      PLT_CONTROL_PLANE_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/control_plane"
-      # Comma separated list of secret keys
-      PLT_CONTROL_PLANE_SECRET_KEYS: "test"
-
+      PLT_CONTROL_PLANE_DATABASE_URL: ""
+      PLT_CONTROL_PLANE_SECRET_KEYS: ""
       # Cron
-      PLT_CRON_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/cron"
-
+      PLT_CRON_DATABASE_URL: ""
       # Trafficante
-      PLT_TRAFFICANTE_DATABASE_URL: "postgres://postgres:postgres@dbtrafficante-postgresql.default.svc.cluster.local/trafficante"
-
+      PLT_TRAFFICANTE_DATABASE_URL: ""
       # Scaler
-      PLT_SCALER_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/scaler"
-
+      PLT_SCALER_DATABASE_URL: ""
       # Risk Cold Storage
-      PLT_COLD_STORAGE_DATABASE_URL: postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/cold_storage
+      PLT_COLD_STORAGE_DATABASE_URL: ""
     resources:
       limits:
         cpu: 2
@@ -202,7 +139,12 @@ services:
   machinist:
     name: machinist
     deploy: true
-    replicaCount: 1
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
     podAnnotations: {}
     podSecurityContext: {}
     monitor:
@@ -230,32 +172,13 @@ services:
     nodeSelector: {}
     tolerations: []
     affinity: {}
-    autoscaling:
-      enabled: false
-      minReplicas: 1
-      maxReplicas: 5
-      targetCPUUtilizationPercentage: 80
-      targetMemoryUtilizationPercentage: 80
     image:
       repository: ghcr.io/platformatic/plt-machinist-3
       pullPolicy: Always
       tag: "demo"
     env:
-      PLT_DEV_MODE: true
-      PLT_PORT: 3000
-      PLT_LOGGER_LEVEL: "debug"
-      PLT_K8S_PROVIDER: "k8s"
-
-      PLT_K8S_INSTALLED_NAMESPACE: "platformatic"
-      PLT_K8S_STORAGE_CLASS: "local-path"
-      PLT_K8S_MACHINE_WAIT_TIMEOUT_MS: 180000
-
-      # TODO(mzugm) remove these after confirming machinist-3 fails if they are not recieved
-      PLT_DEFAULT_MACHINE_CPU_COUNT: 1
-      PLT_DEFAULT_MACHINE_MEMORY_MB: 512
-
-      PLT_DISABLE_EVENT_EXPORT: true
-
+      PLT_LOGGER_LEVEL: "warn"
+    secrets: {}
     resources:
       limits:
         cpu: 1
