@@ -178,6 +178,11 @@ services:
       tag: "demo"
     env:
       PLT_LOGGER_LEVEL: "warn"
+      PLT_DEV_MODE: false
+      PLT_PORT: 3000
+      PLT_K8S_PROVIDER: "k8s"
+      PLT_DISABLE_EVENT_EXPORT: true
+      PLT_K8S_INSTALLED_NAMESPACE: "platformatic"
     secrets: {}
     resources:
       limits:
