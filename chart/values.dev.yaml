@@ -9,21 +9,7 @@ services:
       enabled: false
     env:
       # Shared
-      PORT: 3042
       DEV_K8S: true
-      PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic/trafficante
-      PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic/activities
-      PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic/compliance
-      PLT_EXTERNAL_CRON_URL: http://icc.platformatic/cron
-      PLT_EXTERNAL_USER_MANAGER_URL: http://icc.platformatic/user-manager
-      PLT_EXTERNAL_RISK_MANAGER_URL: http://icc.platformatic/risk-manager
-      PLT_EXTERNAL_RISK_SERVICE_URL: http://icc.platformatic/risk-service
-      PLT_EXTERNAL_METRICS_URL: http://icc.platformatic/metrics
-      PLT_EXTERNAL_SCALER_URL: http://icc.platformatic/scaler
-      PLT_MAIN_SERVICE_URL: http://main.plt.local
-      PLT_CONTROL_PLANE_URL: http://control-plane.plt.local
-      PLT_COMPLIANCE_URL: http://compliance.plt.local
-      PLT_MACHINIST_URL: http://machinist.platformatic
 
       # Main service
       DEMO_LOGIN: "true"
@@ -31,7 +17,6 @@ services:
       PLT_MAIN_LOGGER_LEVEL: "info"
       VITE_API_BASE_URL: "https://icc.plt"
       VITE_SERVER_URL: "https://icc.plt"
-      VITE_TERMS_VERSION: 1
       VITE_DEMO_LOGIN: "DEMO"
       VITE_SUPPORTED_LOGINS: "demo"
 
@@ -39,8 +24,6 @@ services:
       PLT_METRICS_PROMETHEUS_URL: "http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090"
 
       # User Manager
-      PLT_USER_MANAGER_APPLY_MIGRATIONS: "true"
-      PLT_USER_MANAGER_TYPESCRIPT: "false"
       PLT_USER_MANAGER_SUPER_ADMIN_EMAIL: "demo@platformatic.dev"
 
       # Compliance
@@ -72,11 +55,7 @@ services:
       PLT_ICC_SESSION_SECRET: "session-secret"
 
       # Main service
-      PLT_GITHUB_OAUTH_CLIENT_ID: ""
-      PLT_GITHUB_OAUTH_CLIENT_SECRET: ""
-      PLT_GOOGLE_OAUTH_CLIENT_ID: ""
-      PLT_GOOGLE_OAUTH_CLIENT_SECRET: ""
-      PLT_MAIN_SESSION_SECRET_KEY: ""
+      PLT_MAIN_SESSION_SECRET_KEY: "session-test-key"
 
       # Activities
       PLT_ACTIVITIES_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/activities"

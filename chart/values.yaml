@@ -86,6 +86,32 @@ services:
       pullPolicy: Always
       tag: "demo"
     env:
+      # Shared
+      PORT: 3042
+      PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic/trafficante
+      PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic/activities
+      PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic/compliance
+      PLT_EXTERNAL_CRON_URL: http://icc.platformatic/cron
+      PLT_EXTERNAL_USER_MANAGER_URL: http://icc.platformatic/user-manager
+      PLT_EXTERNAL_RISK_MANAGER_URL: http://icc.platformatic/risk-manager
+      PLT_EXTERNAL_RISK_SERVICE_URL: http://icc.platformatic/risk-service
+      PLT_EXTERNAL_METRICS_URL: http://icc.platformatic/metrics
+      PLT_EXTERNAL_SCALER_URL: http://icc.platformatic/scaler
+      PLT_MAIN_SERVICE_URL: http://main.plt.local
+      PLT_CONTROL_PLANE_URL: http://control-plane.plt.local
+      PLT_COMPLIANCE_URL: http://compliance.plt.local
+      PLT_MACHINIST_URL: http://machinist.platformatic
+      DEV_K8S: false
+
+      # Main service
+      DEMO_LOGIN: "false"
+      DEV: false
+      VITE_API_BASE_URL: ""
+      VITE_SERVER_URL: ""
+      VITE_TERMS_VERSION: 1
+      VITE_SUPPORTED_LOGINS: "github,google"
+
+      # Logs
       PLT_MAIN_LOGGER_LEVEL: "warn"
       PLT_COMPLIANCE_LOGGER_LEVEL: "warn"
       PLT_CRON_LOGGER_LEVEL: "warn"
@@ -94,6 +120,8 @@ services:
       PLT_SCALER_LOGGER_LEVEL: "warn"
       PLT_RISK_SERVICE_LOGGER_LEVEL: "warn"
       PLT_COLD_STORAGE_LOGGER_LEVEL: "warn"
+
+      # Scaler
       PLT_SCALER_COOLDOWN: 300
       PLT_SCALER_PERIODIC_TRIGGER: 60
       PLT_METRICS_TIME_RANGE: 60
