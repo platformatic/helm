@@ -102,6 +102,10 @@ services:
       PLT_COMPLIANCE_URL: http://compliance.plt.local
       PLT_MACHINIST_URL: http://machinist.platformatic
       DEV_K8S: false
+      PLT_FEATURE_CACHE_RECOMMENDATIONS: "false"
+      PLT_FEATURE_RISK_SERVICE_DUMP: "false"
+      PLT_FEATURE_FFC: "false"
+      PLT_CRON_DISABLE_ICC_JOBS: "false"
 
       # Main service
       DEMO_LOGIN: "false"
