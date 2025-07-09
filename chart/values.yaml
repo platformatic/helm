@@ -125,6 +125,10 @@ services:
       PLT_SCALER_COOLDOWN: 300
       PLT_SCALER_PERIODIC_TRIGGER: 60
       PLT_METRICS_TIME_RANGE: 60
+
+      # Compliance
+      PLT_COMPLIANCE_RULES_DIR: "./rules"
+
     secrets:
       # Shared
       PLT_ICC_SESSION_SECRET: ""
