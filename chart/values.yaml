@@ -104,6 +104,7 @@ services:
       PLT_CONTROL_PLANE_URL: http://control-plane.plt.local
       PLT_COMPLIANCE_URL: http://compliance.plt.local
       PLT_MACHINIST_URL: http://machinist.platformatic.svc.cluster.local:3042
+      PLT_FEATURE_CACHE: "false"
       PLT_FEATURE_CACHE_RECOMMENDATIONS: "false"
       PLT_FEATURE_RISK_SERVICE_DUMP: "false"
       PLT_FEATURE_FFC: "false"
