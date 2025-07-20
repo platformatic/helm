@@ -52,6 +52,7 @@ services:
     replicaCount: 1
     podAnnotations: {}
     podSecurityContext: {}
+    serviceAccountName: "elasticache-service-account"
     monitor:
       enabled: true
     healthchecks:
