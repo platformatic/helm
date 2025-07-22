@@ -3,9 +3,12 @@
 {{- include "prometheus.podmonitor" (list $ .Values.wattpro.monitor) }}
 {{- end }}
 
-{{- range $service, $val := .Values.services }}
+{{- if $.Values.icc.monitor.enabled -}}
 ---
-{{- if .monitor.enabled -}}
-{{- include "prometheus.servicemonitor" (list $ .) }}
+{{- include "prometheus.servicemonitor" (list $ .Values.icc) }}
 {{- end }}
+
+{{- if $.Values.machinist.monitor.enabled -}}
+---
+{{- include "prometheus.servicemonitor" (list $ .Values.machinist) }}
 {{- end }}

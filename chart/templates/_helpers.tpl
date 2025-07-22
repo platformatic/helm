@@ -63,3 +63,13 @@ Create the name of the service account to use
 {{- define "application.serviceAccountName" -}}
 platformatic
 {{- end }}
+
+{{/* External port number */}}
+{{- define "service.port -}}
+80
+{{- end }}
+
+{{/* External service type */}}
+{{- define "service.type" -}}
+NodePort
+{{- end }}
