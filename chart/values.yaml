@@ -22,159 +22,160 @@ wattpro:
       platformatic.dev/monitor: "prometheus"
     port: "metrics"
 
-# Intelligent Command Center
-icc:
+services:
+  # Intelligent Command Center
+  icc:
 
-  # Used in URLs and referencing deployments, pods, and secrets
-  name: icc
+    # Used in URLs and referencing deployments, pods, and secrets
+    name: icc
 
-  # Deploy ICC
-  deploy: true
+    # Deploy ICC
+    deploy: true
 
-  # Additional pod annotations
-  podAnnotations: {}
+    # Additional pod annotations
+    podAnnotations: {}
 
-  # Additional pod security
-  podSecurityContext: {}
+    # Additional pod security
+    podSecurityContext: {}
 
-  # Monitor
-  monitor:
-    enabled: true
+    # Monitor
+    monitor:
+      enabled: true
 
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
 
-  image:
-    repository: ghcr.io/platformatic/plt-icc-3
-    pullPolicy: Always
-    tag: "latest"
+    image:
+      repository: ghcr.io/platformatic/plt-icc-3
+      pullPolicy: Always
+      tag: "latest"
 
-  # Should provide a url to documentation for each feature
-  features:
-    cache_recommendations:
-      enable: false
-    risk_service_dump:
-      enable: false
-    ffc:
-      enable: false
-    disable_icc_jobs:
-      enable: false
-    dev_mode:
-      enable: false
+    # Should provide a url to documentation for each feature
+    features:
+      cache_recommendations:
+        enable: false
+      risk_service_dump:
+        enable: false
+      ffc:
+        enable: false
+      disable_icc_jobs:
+        enable: false
+      dev_mode:
+        enable: false
 
-  # Available levels: debug, info, warn, error
-  log_level: warn
+    # Available levels: debug, info, warn, error
+    log_level: warn
 
-  # Supported login methods
-  # Change `enable` to `true` to use a method
-  # At least one method must be enabled
-  login_methods:
-    google_oauth:
-      enable: false
-      client_id: ""
-      client_secret: ""
-    github_oauth:
-      enable: false
-      client_id: ""
-      client_secret: ""
-    password:
-      enable: false
-    demo:
-      enable: false
+    # Supported login methods
+    # Change `enable` to `true` to use a method
+    # At least one method must be enabled
+    login_methods:
+      google_oauth:
+        enable: false
+        client_id: ""
+        client_secret: ""
+      github_oauth:
+        enable: false
+        client_id: ""
+        client_secret: ""
+      password:
+        enable: false
+      demo:
+        enable: false
 
-  # The URL that ICC will be accessed from
-  public_url: "https://icc.mywebsite.com"
+    # The URL that ICC will be accessed from
+    public_url: "https://icc.mywebsite.com"
 
-  secrets:
-    # Shared
-    PLT_ICC_SESSION_SECRET: ""
-    # Main service
-    PLT_GITHUB_OAUTH_CLIENT_ID: ""
-    PLT_GITHUB_OAUTH_CLIENT_SECRET: ""
-    PLT_GOOGLE_OAUTH_CLIENT_ID: ""
-    PLT_GOOGLE_OAUTH_CLIENT_SECRET: ""
-    PLT_MAIN_SESSION_SECRET_KEY: ""
-    # Activities
-    PLT_ACTIVITIES_DATABASE_URL: ""
-    # User Manager
-    PLT_USER_MANAGER_DATABASE_URL: ""
-    PLT_USER_MANAGER_SESSION_SECRET_KEY: ""
-    # Compliance
-    PLT_COMPLIANCE_DATABASE_URL: ""
-    # Control Plane
-    PLT_CONTROL_PLANE_DATABASE_URL: ""
-    PLT_CONTROL_PLANE_SECRET_KEYS: ""
-    # Cron
-    PLT_CRON_DATABASE_URL: ""
-    # Trafficante
-    PLT_TRAFFICANTE_DATABASE_URL: ""
-    # Scaler
-    PLT_SCALER_DATABASE_URL: ""
-    # Risk Cold Storage
-    PLT_COLD_STORAGE_DATABASE_URL: ""
+    secrets:
+      # Shared
+      PLT_ICC_SESSION_SECRET: ""
+      # Main service
+      PLT_GITHUB_OAUTH_CLIENT_ID: ""
+      PLT_GITHUB_OAUTH_CLIENT_SECRET: ""
+      PLT_GOOGLE_OAUTH_CLIENT_ID: ""
+      PLT_GOOGLE_OAUTH_CLIENT_SECRET: ""
+      PLT_MAIN_SESSION_SECRET_KEY: ""
+      # Activities
+      PLT_ACTIVITIES_DATABASE_URL: ""
+      # User Manager
+      PLT_USER_MANAGER_DATABASE_URL: ""
+      PLT_USER_MANAGER_SESSION_SECRET_KEY: ""
+      # Compliance
+      PLT_COMPLIANCE_DATABASE_URL: ""
+      # Control Plane
+      PLT_CONTROL_PLANE_DATABASE_URL: ""
+      PLT_CONTROL_PLANE_SECRET_KEYS: ""
+      # Cron
+      PLT_CRON_DATABASE_URL: ""
+      # Trafficante
+      PLT_TRAFFICANTE_DATABASE_URL: ""
+      # Scaler
+      PLT_SCALER_DATABASE_URL: ""
+      # Risk Cold Storage
+      PLT_COLD_STORAGE_DATABASE_URL: ""
 
-  service:
-    type: NodePort
-    port: 80
-    targetPort: 3042
+    service:
+      type: NodePort
+      port: 80
+      targetPort: 3042
 
-machinist:
-  name: machinist
-  deploy: true
-  autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 3
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 80
-  podAnnotations: {}
-  podSecurityContext: {}
-  monitor:
-    enabled: true
-  serviceAccountName: "plt-pod-manager"
-  healthchecks:
-    livenessProbe:
-      httpGet:
-        path: /status
-        port: http
-      failureThreshold: 3
-      initialDelaySeconds: 5
-      periodSeconds: 10
-      successThreshold: 1
-      timeoutSeconds: 1
-    readinessProbe:
-      httpGet:
-        path: /status
-        port: http
-      failureThreshold: 3
-      initialDelaySeconds: 5
-      periodSeconds: 10
-      successThreshold: 1
-      timeoutSeconds: 1
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  image:
-    repository: ghcr.io/platformatic/plt-machinist-3
-    pullPolicy: Always
-    tag: "demo"
-  env:
-    PLT_LOGGER_LEVEL: "warn"
-    PLT_DEV_MODE: false
-    PLT_PORT: 3000
-    PLT_K8S_PROVIDER: "k8s"
-    PLT_DISABLE_EVENT_EXPORT: true
-    PLT_K8S_INSTALLED_NAMESPACE: "platformatic"
-  secrets: {}
-  resources:
-    limits:
-      cpu: 1
-      memory: 1Gi
-    requests:
-      cpu: 0.5
-      memory: 512Mi
-  service:
-    type: NodePort
-    port: 80
-    targetPort: 3000
+  machinist:
+    name: machinist
+    deploy: true
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    podAnnotations: {}
+    podSecurityContext: {}
+    monitor:
+      enabled: true
+    serviceAccountName: "plt-pod-manager"
+    healthchecks:
+      livenessProbe:
+        httpGet:
+          path: /status
+          port: http
+        failureThreshold: 3
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      readinessProbe:
+        httpGet:
+          path: /status
+          port: http
+        failureThreshold: 3
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    image:
+      repository: ghcr.io/platformatic/plt-machinist-3
+      pullPolicy: Always
+      tag: "demo"
+    env:
+      PLT_LOGGER_LEVEL: "warn"
+      PLT_DEV_MODE: false
+      PLT_PORT: 3000
+      PLT_K8S_PROVIDER: "k8s"
+      PLT_DISABLE_EVENT_EXPORT: true
+      PLT_K8S_INSTALLED_NAMESPACE: "platformatic"
+    secrets: {}
+    resources:
+      limits:
+        cpu: 1
+        memory: 1Gi
+      requests:
+        cpu: 0.5
+        memory: 512Mi
+    service:
+      type: NodePort
+      port: 80
+      targetPort: 3000

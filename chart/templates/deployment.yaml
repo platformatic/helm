@@ -1,8 +1,8 @@
-{{- if .Values.icc.deploy }}
+{{- if .Values.services.icc.deploy }}
 ---
-{{- include "deployment.icc" (list $ .Values.icc) }}
+{{- include "deployment.icc" (list $ .Values.services.icc) }}
 {{- end }}
-{{- if .Values.machinist.deploy }}
+{{- if .Values.services.machinist.deploy }}
 ---
-{{- include "deployment.machinist" (list $ .Values.machinist) }}
+{{- include "deployment.machinist" (list $ .Values.services.machinist) }}
 {{- end }}
