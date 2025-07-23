@@ -155,6 +155,22 @@ spec:
                   name: icc_google_oauth
                   key: client_secret
 
+            - name: PLT_ICC_SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: icc
+                  key: icc_session
+            - name: PLT_CONTROL_PLANE_SECRET_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: icc
+                  key: control_plane_keys
+            - name: PLT_USER_MANAGER_SESSION_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: icc
+                  key: user_manager_session
+
           {{- if .command }}
           command:
             {{- toYaml .command | nindent 12 }}

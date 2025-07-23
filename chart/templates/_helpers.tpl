@@ -73,3 +73,8 @@ platformatic
 {{- define "service.type" -}}
 NodePort
 {{- end }}
+
+{{/* ICC databases */}}
+{{- define "service.icc.databases" -}}
+activities cold_storage control_plane cron scaler trafficante user_manager
+{{- end }}
