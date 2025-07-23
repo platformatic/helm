@@ -65,7 +65,7 @@ platformatic
 {{- end }}
 
 {{/* External port number */}}
-{{- define "service.port -}}
+{{- define "service.port" -}}
 80
 {{- end }}
 

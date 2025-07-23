@@ -16,7 +16,7 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ .name }}:{{- include "service.port" }}']
+      args: ['{{ .name }}:{{- include "service.port" $ }}']
   restartPolicy: Never
 {{- end }}
 {{- end }}

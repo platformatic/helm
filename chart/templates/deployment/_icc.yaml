@@ -133,13 +133,27 @@ spec:
             - name: PLT_COMPLIANCE_RULES_DIR
               value: "./rules"
 
-            {{- range $key, $value := .secrets }}
-            - name: '{{ $key }}'
+            - name: PLT_GITHUB_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ $val.name }}
-                  key: '{{ $key }}'
-            {{- end }}
+                  name: icc_github_oauth
+                  key: client_id
+            - name: PLT_GITHUB_OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: icc_github_oauth
+                  key: client_secret
+
+            - name: PLT_GOOGLE_OAUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: icc_google_oauth
+                  key: client_id
+            - name: PLT_GOOGLE_OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: icc_google_oauth
+                  key: client_secret
 
           {{- if .command }}
           command:
