@@ -1,0 +1,126 @@
+{{- define "deployment.machinist" }}
+{{- $ := index . 0 }}
+
+{{- with index . 1 }}
+{{ $target_port := 3042 }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Values.namespace | default "platformatic" }}
+  labels:
+    {{- include "application.labels" $ | nindent 4 }}
+    {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 6 }}
+  template:
+
+    metadata:
+      {{- with .podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      labels:
+        {{- with .podLabels }}
+        {{- toYaml .| nindent 8 }}
+        {{- end }}
+        {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 8 }}
+
+    spec:
+      {{- with $.Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ $.Values.imagePullSecret.name | default "image-pull-secret" }}
+      {{- end }}
+
+      serviceAccountName: {{ .serviceAccountName | default (include "application.serviceAccountName" $) }}
+
+      securityContext:
+        {{- toYaml .podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .name }}
+
+          securityContext:
+            {{- toYaml .securityContext | nindent 12 }}
+
+          image: "{{ .image.repository }}:{{ .image.tag | default "latest" }}"
+          imagePullPolicy: {{ .image.pullPolicy | default "IfNotPresent" }}
+
+          env:
+            - name: PLT_PORT
+              value: {{ $target_port }}
+            - name: PLT_LOGGER_LEVEL
+              value: {{ .log_level }}
+            - name: PLT_DEV_MODE
+              value: {{ .features.dev_mode.enable }}
+            - name: PLT_K8S_PROVIDER
+              value: "k8s"
+            - name: PLT_DISABLE_EVENT_EXPORT
+              {{- if .features.event_export.enable }}
+              value: false
+              {{- else }}
+              value: true
+              {{- end}}
+            - name: PLT_K8S_INSTALLED_NAMESPACE
+              value: {{ $.Values.namespace | default "platformatic" }}
+
+          {{- if .command }}
+          command:
+            {{- toYaml .command | nindent 12 }}
+          {{- end }}
+
+          {{- if .workingDir }}
+          workingDir: {{ .workingDir }}
+          {{- end }}
+
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: {{ $target_port }}
+
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: http
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: http
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+
+          resources:
+            limits:
+              cpu: 1
+              memory: 1024Mi
+            requests:
+              cpu: 0.5 
+              memory: 512Mi
+
+      {{- with .nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+{{- end }}

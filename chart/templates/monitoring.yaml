@@ -1,14 +1,11 @@
 {{- if .Values.wattpro.monitor.enable }}
----
 {{- include "prometheus.podmonitor" (list $ .Values.wattpro.monitor) }}
 {{- end }}
 
 {{- if $.Values.services.icc.monitor.enabled -}}
----
 {{- include "prometheus.servicemonitor" (list $ .Values.services.icc) }}
 {{- end }}
 
 {{- if $.Values.services.machinist.monitor.enabled -}}
----
 {{- include "prometheus.servicemonitor" (list $ .Values.services.machinist) }}
 {{- end }}

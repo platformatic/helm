@@ -85,7 +85,11 @@ spec:
             - name: PLT_FEATURE_FFC
               value: "{{ .features.ffc.enable | default false }}"
             - name: PLT_CRON_DISABLE_ICC_JOBS
-              value: "{{ .features.disable_icc_jobs.enable | default false }}"
+              {{- if not .features.icc_jobs.enable }}
+              value: true
+              {{- else }}
+              value: false
+              {{- end }}
             - name: DEV_K8S
               value: {{ .features.dev_mode.enable | default false }}
 
@@ -209,6 +213,7 @@ spec:
             requests:
               cpu: 1
               memory: 1024Mi
+
       {{- with .nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
