@@ -104,8 +104,13 @@ spec:
               value: {{ .public_url }}
             - name: VITE_TERMS_VERSION
               value: 1
+
+            {{- $login_methods := list }}
+            {{- range $k,$v := .login_methods }}
+              {{- $login_methods = append $login_methods $k}}
+            {{- end }}
             - name: VITE_SUPPORTED_LOGINS
-              value: "" # TODO
+              value: {{ join "," $login_methods }}
 
             # Logs
             - name: PLT_MAIN_LOGGER_LEVEL
