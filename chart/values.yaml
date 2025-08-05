@@ -1,32 +1,10 @@
 cloud: ""
 namespace: platformatic
 
-serviceAccounts:
-  - name: "plt-pod-manager"
-    namespace: "platformatic"
-    annotations: {}
-    resources:
-      read:
-        apiGroups:
-          - ""
-          - apps
-          - networking.k8s.io
-        kinds:
-          - pods
-          - deployments
-          - replicasets
-          - replicationcontrollers
-          - ingresses
-          - services
-      update:
-        apiGroups:
-          - ""
-          - apps
-        kinds:
-          - deployments
-          - replicasets
-          - replicationcontrollers
-          - pods
+podManagerServiceAccount:
+  bindToNamespaces:
+    - platformatic
+    - apps
 
 imagePullSecret:
   name: "image-pull-secret"
