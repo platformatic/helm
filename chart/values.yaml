@@ -27,6 +27,31 @@ serviceAccounts:
           - replicasets
           - replicationcontrollers
           - pods
+  - name: "plt-pod-manager"
+    namespace: "apps"
+    annotations: {}
+    resources:
+      read:
+        apiGroups:
+          - ""
+          - apps
+          - networking.k8s.io
+        kinds:
+          - pods
+          - deployments
+          - replicasets
+          - replicationcontrollers
+          - ingresses
+          - services
+      update:
+        apiGroups:
+          - ""
+          - apps
+        kinds:
+          - deployments
+          - replicasets
+          - replicationcontrollers
+          - pods
 
 imagePullSecret:
   name: "image-pull-secret"
