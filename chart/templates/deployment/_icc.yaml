@@ -103,7 +103,7 @@ spec:
             - name: VITE_SERVER_URL
               value: {{ .public_url }}
             - name: VITE_TERMS_VERSION
-              value: 1
+              value: "1"
 
             {{- $login_methods := list }}
             {{- range $k,$v := .login_methods }}
@@ -132,11 +132,11 @@ spec:
 
             # Scaler
             - name: PLT_SCALER_COOLDOWN
-              value: 300
+              value: "300"
             - name: PLT_SCALER_PERIODIC_TRIGGER
-              value: 60
+              value: "60"
             - name: PLT_METRICS_TIME_RANGE
-              value: 60
+              value: "60"
 
             # Compliance
             - name: PLT_COMPLIANCE_RULES_DIR
