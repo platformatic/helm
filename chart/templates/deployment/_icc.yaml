@@ -51,7 +51,7 @@ spec:
           env:
             # Shared
             - name: PORT
-              value: {{ $target_port }}
+              value: "{{ $target_port }}"
             - name: PLT_EXTERNAL_TRAFFICANTE_URL
               value: http://icc.platformatic/trafficante
             - name: PLT_EXTERNAL_ACTIVITIES_URL
@@ -86,18 +86,18 @@ spec:
               value: "{{ .features.ffc.enable | default false }}"
             - name: PLT_CRON_DISABLE_ICC_JOBS
               {{- if not .features.icc_jobs.enable }}
-              value: true
+              value: "true"
               {{- else }}
-              value: false
+              value: "false"
               {{- end }}
             - name: DEV_K8S
-              value: {{ .features.dev_mode.enable | default false }}
+              value: "{{ .features.dev_mode.enable | default false }}"
 
             # Main service
             - name: DEMO_LOGIN
               value: "{{ .features.dev_mode.enable | default false }}"
             - name: DEV
-              value: {{ .features.dev_mode.enable | default false }}
+              value: "{{ .features.dev_mode.enable | default false }}"
             - name: VITE_API_BASE_URL
               value: {{ .public_url }}
             - name: VITE_SERVER_URL
@@ -142,27 +142,31 @@ spec:
             - name: PLT_COMPLIANCE_RULES_DIR
               value: "./rules"
 
+            {{- if .login_methods.github_oauth.enable }}
             - name: PLT_GITHUB_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: icc_github_oauth
+                  name: icc-github-oauth
                   key: client_id
             - name: PLT_GITHUB_OAUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: icc_github_oauth
+                  name: icc-github-oauth
                   key: client_secret
+            {{- end }}
 
+            {{- if .login_methods.google_oauth.enable }}
             - name: PLT_GOOGLE_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: icc_google_oauth
+                  name: icc-google-oauth
                   key: client_id
             - name: PLT_GOOGLE_OAUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: icc_google_oauth
+                  name: icc-google-oauth
                   key: client_secret
+            {{- end }}
 
             - name: PLT_ICC_SESSION_SECRET
               valueFrom:

@@ -51,18 +51,18 @@ spec:
 
           env:
             - name: PLT_PORT
-              value: {{ $target_port }}
+              value: "{{ $target_port }}"
             - name: PLT_LOGGER_LEVEL
               value: {{ .log_level }}
             - name: PLT_DEV_MODE
-              value: {{ .features.dev_mode.enable }}
+              value: "{{ .features.dev_mode.enable }}"
             - name: PLT_K8S_PROVIDER
               value: "k8s"
             - name: PLT_DISABLE_EVENT_EXPORT
               {{- if .features.event_export.enable }}
-              value: false
+              value: "false"
               {{- else }}
-              value: true
+              value: "true"
               {{- end}}
             - name: PLT_K8S_INSTALLED_NAMESPACE
               value: {{ $.Values.namespace | default "platformatic" }}
