@@ -4,7 +4,6 @@ namespace: platformatic
 podManagerServiceAccount:
   bindToNamespaces:
     - platformatic
-    - apps
 
 imagePullSecret:
   name: "image-pull-secret"
@@ -85,6 +84,7 @@ services:
       PLT_FEATURE_RISK_SERVICE_DUMP: "false"
       PLT_FEATURE_FFC: "false"
       PLT_CRON_DISABLE_ICC_JOBS: "false"
+      PLT_ICC_LOGGER_LEVEL: "warn"
 
       # Main service
       DEMO_LOGIN: "false"
@@ -93,16 +93,6 @@ services:
       VITE_SERVER_URL: ""
       VITE_TERMS_VERSION: 1
       VITE_SUPPORTED_LOGINS: "github,google"
-
-      # Logs
-      PLT_MAIN_LOGGER_LEVEL: "warn"
-      PLT_COMPLIANCE_LOGGER_LEVEL: "warn"
-      PLT_CRON_LOGGER_LEVEL: "warn"
-      PLT_CONTROL_PLANE_LOG_LEVEL: "warn"
-      PLT_TRAFFICANTE_LOGGER_LEVEL: "warn"
-      PLT_SCALER_LOGGER_LEVEL: "warn"
-      PLT_RISK_SERVICE_LOGGER_LEVEL: "warn"
-      PLT_COLD_STORAGE_LOGGER_LEVEL: "warn"
 
       # Scaler
       PLT_SCALER_COOLDOWN: 300
