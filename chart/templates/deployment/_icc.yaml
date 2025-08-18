@@ -52,6 +52,8 @@ spec:
             # Shared
             - name: PORT
               value: "{{ $target_port }}"
+            - name: PLT_ICC_LOGGER_LEVEL
+              value: "{{ .log_level }}"
             - name: PLT_EXTERNAL_TRAFFICANTE_URL
               value: http://icc.platformatic/trafficante
             - name: PLT_EXTERNAL_ACTIVITIES_URL
@@ -111,24 +113,6 @@ spec:
             {{- end }}
             - name: VITE_SUPPORTED_LOGINS
               value: {{ join "," $login_methods }}
-
-            # Logs
-            - name: PLT_MAIN_LOGGER_LEVEL
-              value: {{ .log_level }}
-            - name: PLT_COMPLIANCE_LOGGER_LEVEL
-              value: {{ .log_level }}
-            - name: PLT_CRON_LOGGER_LEVEL
-              value: {{ .log_level }}
-            - name: PLT_CONTROL_PLANE_LOG_LEVEL
-              value: {{ .log_level }}
-            - name: PLT_TRAFFICANTE_LOGGER_LEVEL
-              value: {{ .log_level }}
-            - name: PLT_SCALER_LOGGER_LEVEL
-              value: {{ .log_level }}
-            - name: PLT_RISK_SERVICE_LOGGER_LEVEL
-              value: {{ .log_level }}
-            - name: PLT_COLD_STORAGE_LOGGER_LEVEL
-              value: {{ .log_level }}
 
             # Scaler
             - name: PLT_SCALER_COOLDOWN
