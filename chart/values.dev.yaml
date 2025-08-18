@@ -11,6 +11,7 @@ services:
       # Shared
       DEV_K8S: true
       PLT_ICC_LOGGER_LEVEL: "info"
+      PLT_MACHINIST_URL: http://machinist.platformatic.svc.cluster.local:3042
 
       # Main service
       DEMO_LOGIN: "true"
