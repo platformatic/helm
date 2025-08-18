@@ -10,11 +10,11 @@ services:
     env:
       # Shared
       DEV_K8S: true
+      PLT_ICC_LOGGER_LEVEL: "info"
 
       # Main service
       DEMO_LOGIN: "true"
       DEV: true
-      PLT_MAIN_LOGGER_LEVEL: "info"
       VITE_API_BASE_URL: "https://icc.plt"
       VITE_SERVER_URL: "https://icc.plt"
       VITE_DEMO_LOGIN: "DEMO"
@@ -26,29 +26,13 @@ services:
       # User Manager
       PLT_USER_MANAGER_SUPER_ADMIN_EMAIL: "demo@platformatic.dev"
 
-      # Compliance
-      PLT_COMPLIANCE_LOGGER_LEVEL: "info"
-
       # Control Plane
       PLT_CONTROL_PLANE_LOG_LEVEL: "info"
 
-      # Cron
-      PLT_CRON_LOGGER_LEVEL: "info"
-
-      # Trafficante
-      PLT_TRAFFICANTE_LOGGER_LEVEL: "info"
-
       # Scaler
-      PLT_SCALER_LOGGER_LEVEL: "info"
       PLT_SCALER_COOLDOWN: 30
       PLT_SCALER_PERIODIC_TRIGGER: 20
       PLT_METRICS_TIME_RANGE: 30
-
-      # Risk service
-      PLT_RISK_SERVICE_LOGGER_LEVEL: "info"
-
-      # Risk Cold Storage
-      PLT_COLD_STORAGE_LOGGER_LEVEL: "info"
     secrets:
       # Shared
       PLT_ICC_SESSION_SECRET: "session-secret"
