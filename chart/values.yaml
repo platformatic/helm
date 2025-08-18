@@ -4,7 +4,6 @@ namespace: platformatic
 podManagerServiceAccount:
   bindToNamespaces:
     - platformatic
-    - apps
 
 imagePullSecret:
   name: "image-pull-secret"

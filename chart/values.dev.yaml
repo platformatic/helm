@@ -1,9 +1,5 @@
 cloud: ""
 
-podManagerServiceAccount:
-  bindToNamespaces:
-    - platformatic
-
 services:
   icc:
     name: icc
