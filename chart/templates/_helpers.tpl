@@ -76,5 +76,5 @@ NodePort
 
 {{/* ICC databases */}}
 {{- define "service.icc.databases" -}}
-activities cold_storage control_plane cron scaler trafficante user_manager
+activities risk_cold_storage control_plane cron scaler trafficante user_manager cluster_manager compliance
 {{- end }}

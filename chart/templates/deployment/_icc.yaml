@@ -101,9 +101,11 @@ spec:
             - name: DEV
               value: "{{ .features.dev_mode.enable | default false }}"
             - name: VITE_API_BASE_URL
-              value: {{ .public_url }}
+              value: "{{ .public_url }}"
             - name: VITE_SERVER_URL
-              value: {{ .public_url }}
+              value: "{{ .public_url }}"
+            - name: PLT_MAIN_URL
+              value: "{{ .public_url }}"
             - name: VITE_TERMS_VERSION
               value: "1"
 
@@ -121,6 +123,8 @@ spec:
               value: "60"
             - name: PLT_METRICS_TIME_RANGE
               value: "60"
+            - name: PLT_METRICS_PROMETHEUS_URL
+              value: {{ .prometheus.url }}
 
             # Compliance
             - name: PLT_COMPLIANCE_RULES_DIR
@@ -167,6 +171,25 @@ spec:
                 secretKeyRef:
                   name: icc
                   key: user_manager_session
+
+            - name: PLT_ICC_VALKEY_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: icc-valkey
+                  key: icc
+            - name: PLT_APPLICATIONS_VALKEY_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: icc-valkey
+                  key: apps
+
+            {{- range (include "service.icc.databases" . | trim | split " ") }}
+            - name: {{ printf "PLT_%s_DATABASE_URL" (upper .) }}
+              valueFrom:
+                secretKeyRef:
+                  name: icc-databases
+                  key: "{{ . }}"
+            {{- end }}
 
           {{- if .command }}
           command:
