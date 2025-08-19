@@ -2,5 +2,5 @@ apiVersion: v2
 name: helm
 description: Platformatic microservices
 type: application
-version: 3.4.0
+version: 3.4.1-alpha.1
 appVersion: "v2"
