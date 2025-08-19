@@ -66,15 +66,15 @@ services:
       # Shared
       PORT: 3042
       DEV_K8S: false
-      PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic.svc.cluster.local/trafficante
-      PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic.svc.cluster.local/activities
-      PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic.svc.cluster.local/compliance
-      PLT_EXTERNAL_CRON_URL: http://icc.platformatic.svc.cluster.local/cron
-      PLT_EXTERNAL_USER_MANAGER_URL: http://icc.platformatic.svc.cluster.local/user-manager
-      PLT_EXTERNAL_RISK_MANAGER_URL: http://icc.platformatic.svc.cluster.local/risk-manager
-      PLT_EXTERNAL_RISK_SERVICE_URL: http://icc.platformatic.svc.cluster.local/risk-service
-      PLT_EXTERNAL_METRICS_URL: http://icc.platformatic.svc.cluster.local/metrics
-      PLT_EXTERNAL_SCALER_URL: http://icc.platformatic.svc.cluster.local/scaler
+      PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic.svc.cluster.local:3042/trafficante
+      PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic.svc.cluster.local:3042/activities
+      PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic.svc.cluster.local:3042/compliance
+      PLT_EXTERNAL_CRON_URL: http://icc.platformatic.svc.cluster.local:3042/cron
+      PLT_EXTERNAL_USER_MANAGER_URL: http://icc.platformatic.svc.cluster.local:3042/user-manager
+      PLT_EXTERNAL_RISK_MANAGER_URL: http://icc.platformatic.svc.cluster.local:3042/risk-manager
+      PLT_EXTERNAL_RISK_SERVICE_URL: http://icc.platformatic.svc.cluster.local:3042/risk-service
+      PLT_EXTERNAL_METRICS_URL: http://icc.platformatic.svc.cluster.local:3042/metrics
+      PLT_EXTERNAL_SCALER_URL: http://icc.platformatic.svc.cluster.local:3042/scaler
       PLT_MAIN_SERVICE_URL: http://main.plt.local
       PLT_CONTROL_PLANE_URL: http://control-plane.plt.local
       PLT_COMPLIANCE_URL: http://compliance.plt.local
