@@ -183,6 +183,12 @@ spec:
                   name: icc-valkey
                   key: apps
 
+            - name: PLT_COLD_STORAGE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: icc-databases
+                  key: "risk_cold_storage"
+
             {{- range (include "service.icc.databases" . | trim | split " ") }}
             - name: {{ printf "PLT_%s_DATABASE_URL" (upper .) }}
               valueFrom:
