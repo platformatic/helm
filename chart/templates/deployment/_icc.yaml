@@ -109,9 +109,23 @@ spec:
             - name: VITE_TERMS_VERSION
               value: "1"
 
+            # User manager
+            - name: PLT_USER_MANAGER_SESSION_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: icc
+                  key: user_manager_session
+            {{- if .login_methods.demo.enable }}
+            - name: PLT_USER_MANAGER_SUPER_ADMIN_EMAIL
+              value: "demo@platformatic.dev"
+            {{- end }}
+
+
             {{- $login_methods := list }}
             {{- range $k,$v := .login_methods }}
-              {{- $login_methods = append $login_methods $k}}
+              {{- if $v.enable }}
+                {{- $login_methods = append $login_methods $k}}
+              {{- end }}
             {{- end }}
             - name: VITE_SUPPORTED_LOGINS
               value: {{ join "," $login_methods }}
@@ -166,11 +180,6 @@ spec:
                 secretKeyRef:
                   name: icc
                   key: control_plane_keys
-            - name: PLT_USER_MANAGER_SESSION_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: icc
-                  key: user_manager_session
 
             - name: PLT_ICC_VALKEY_CONNECTION_STRING
               valueFrom:
