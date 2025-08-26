@@ -1,202 +1,169 @@
+# Allows the chart to install cloud-provider-specific resources
+# Supported values: aws, gcp
 cloud: ""
+
+# The namespace all Platformatic resources will be saved
 namespace: platformatic
 
+# Namespaces where platformatic will interact. If your applications are deployed
+# to a namespace other than `platformatic`, add the namespace names to the list
 podManagerServiceAccount:
   bindToNamespaces:
     - platformatic
 
+# The location to download Platformatic images from along with credentials
 imagePullSecret:
-  name: "image-pull-secret"
   registry: ghcr.io
   user: ""
   token: ""
 
-ingress:
-  enabled: false
-
 wattpro:
+  # Configure monitoring of wattpro applications
   monitor:
     enable: true
+    # The name of the Prometheus PodMonitor
     name: "wattpro"
     matchLabels:
       platformatic.dev/monitor: "prometheus"
     port: "metrics"
 
+# Platformatic service configuration
+# Installation documentation is available at:
 services:
+
+  # Intelligent Command Center
   icc:
+
+    # Used in URLs and referencing deployments, pods, and secrets
     name: icc
+
+    # Deploy ICC
     deploy: true
-    autoscaling:
-      enabled: true
-      minReplicas: 1
-      maxReplicas: 3
-      targetCPUUtilizationPercentage: 80
-      targetMemoryUtilizationPercentage: 80
-    podAnnotations: {}
-    podSecurityContext: {}
+
+    # Monitor via Prometheus
     monitor:
       enabled: true
-    healthchecks:
-      livenessProbe:
-        httpGet:
-          path: /api/status
-          port: http
-        failureThreshold: 5
-        initialDelaySeconds: 40
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 1
-      readinessProbe:
-        httpGet:
-          path: /api/status
-          port: http
-        failureThreshold: 5
-        initialDelaySeconds: 40
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 1
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
+
+    # We have a changelog available at: 
     image:
       repository: ghcr.io/platformatic/plt-icc-3
       pullPolicy: Always
-      tag: "demo"
-    env:
-      # Shared
-      PORT: 3042
-      DEV_K8S: false
-      PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic.svc.cluster.local/trafficante
-      PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic.svc.cluster.local/activities
-      PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic.svc.cluster.local/compliance
-      PLT_EXTERNAL_CRON_URL: http://icc.platformatic.svc.cluster.local/cron
-      PLT_EXTERNAL_USER_MANAGER_URL: http://icc.platformatic.svc.cluster.local/user-manager
-      PLT_EXTERNAL_RISK_MANAGER_URL: http://icc.platformatic.svc.cluster.local/risk-manager
-      PLT_EXTERNAL_RISK_SERVICE_URL: http://icc.platformatic.svc.cluster.local/risk-service
-      PLT_EXTERNAL_METRICS_URL: http://icc.platformatic.svc.cluster.local/metrics
-      PLT_EXTERNAL_SCALER_URL: http://icc.platformatic.svc.cluster.local/scaler
-      PLT_MAIN_SERVICE_URL: http://main.plt.local
-      PLT_CONTROL_PLANE_URL: http://control-plane.plt.local
-      PLT_COMPLIANCE_URL: http://compliance.plt.local
-      PLT_MACHINIST_URL: http://machinist.platformatic.svc.cluster.local
-      PLT_FEATURE_CACHE: "false"
-      PLT_FEATURE_CACHE_RECOMMENDATIONS: "false"
-      PLT_FEATURE_RISK_SERVICE_DUMP: "false"
-      PLT_FEATURE_FFC: "false"
-      PLT_CRON_DISABLE_ICC_JOBS: "false"
-      PLT_ICC_LOGGER_LEVEL: "warn"
+      tag: "latest"
 
-      # Main service
-      DEMO_LOGIN: "false"
-      DEV: false
-      VITE_API_BASE_URL: ""
-      VITE_SERVER_URL: ""
-      VITE_TERMS_VERSION: 1
-      VITE_SUPPORTED_LOGINS: "github,google"
+    # TODO Should provide a url to documentation for each feature
+    features:
+      cache_recommendations:
+        enable: false
+      risk_service_dump:
+        enable: false
+      ffc:
+        enable: false
+      icc_jobs:
+        enable: true
+      dev_mode:
+        enable: false
 
-      # Scaler
-      PLT_SCALER_COOLDOWN: 300
-      PLT_SCALER_PERIODIC_TRIGGER: 60
-      PLT_METRICS_TIME_RANGE: 60
+    # Available levels: debug, info, warn, error
+    log_level: warn
 
-      # Compliance
-      PLT_COMPLIANCE_RULES_DIR: "./rules"
+    # Supported login methods
+    # Change `enable` to `true` to use a method
+    # At least one method must be enabled
+    login_methods:
+      google_oauth:
+        enable: false
+        #client_id: ""
+        #client_secret: ""
+      github_oauth:
+        enable: false
+        #client_id: ""
+        #client_secret: ""
+      password:
+        enable: false
+      demo:
+        enable: false
 
-    secrets:
-      # Shared
-      PLT_ICC_SESSION_SECRET: ""
-      # Main service
-      PLT_GITHUB_OAUTH_CLIENT_ID: ""
-      PLT_GITHUB_OAUTH_CLIENT_SECRET: ""
-      PLT_GOOGLE_OAUTH_CLIENT_ID: ""
-      PLT_GOOGLE_OAUTH_CLIENT_SECRET: ""
-      PLT_MAIN_SESSION_SECRET_KEY: ""
-      # Activities
-      PLT_ACTIVITIES_DATABASE_URL: ""
-      # User Manager
-      PLT_USER_MANAGER_DATABASE_URL: ""
-      PLT_USER_MANAGER_SESSION_SECRET_KEY: ""
-      # Compliance
-      PLT_COMPLIANCE_DATABASE_URL: ""
-      # Control Plane
-      PLT_CONTROL_PLANE_DATABASE_URL: ""
-      PLT_CONTROL_PLANE_SECRET_KEYS: ""
-      # Cron
-      PLT_CRON_DATABASE_URL: ""
-      # Trafficante
-      PLT_TRAFFICANTE_DATABASE_URL: ""
-      # Scaler
-      PLT_SCALER_DATABASE_URL: ""
-      # Risk Cold Storage
-      PLT_COLD_STORAGE_DATABASE_URL: ""
-    resources:
-      limits:
-        cpu: 2
-        memory: 2048Mi
-      requests:
-        cpu: 1
-        memory: 1024Mi
-    service:
-      type: NodePort
-      port: 80
-      targetPort: 3042
+    # The URL that ICC will be accessed from
+    # Some examples:
+    #   https://icc.example.com
+    #   https://example.com/icc
+    #public_url: ""
+
+    # The URL to access the ICC database
+    # Makes sure to include any required credentials and/or port number
+    #database_url: ""
+
+    # URLs to valkey for ICC caching systems
+    #valkey:
+    #  apps_url: ""
+    #  icc_url: ""
+
+    # These values should be autogenerated during installation
+    # and only updated occassionally because they could force users to login
+    # again if cleared
+    #secrets:
+    #  icc_session: ""
+    #  control_plane_keys: ""
+    #  user_manager_session: ""
+
+    # ICC scans prometheus for metrics details to show various performance details
+    #prometheus:
+    #  url: ""
+
+    # Additional pod annotations
+    #podAnnotations: {}
+
+    # Additional pod security
+    #podSecurityContext: {}
+
+    # Selector labels for the node to provision ICC to
+    #nodeSelector: {}
+
+    # Nodes to avoid
+    #tolerations: []
+
+    # Nodes to join
+    #affinity: {}
 
   machinist:
+    # Used in URLs and referencing deployments, pods, and secrets
     name: machinist
-    deploy: true
-    autoscaling:
-      enabled: true
-      minReplicas: 1
-      maxReplicas: 3
-      targetCPUUtilizationPercentage: 80
-      targetMemoryUtilizationPercentage: 80
-    podAnnotations: {}
-    podSecurityContext: {}
-    monitor:
-      enabled: true
-    serviceAccountName: "plt-pod-manager"
-    healthchecks:
-      livenessProbe:
-        httpGet:
-          path: /status
-          port: http
-        failureThreshold: 3
-        initialDelaySeconds: 5
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 1
-      readinessProbe:
-        httpGet:
-          path: /status
-          port: http
-        failureThreshold: 3
-        initialDelaySeconds: 5
-        periodSeconds: 10
-        successThreshold: 1
-        timeoutSeconds: 1
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
+
+    # We have a changelog available at: 
     image:
       repository: ghcr.io/platformatic/plt-machinist-3
       pullPolicy: Always
-      tag: "demo"
-    env:
-      PLT_LOGGER_LEVEL: "warn"
-      PLT_DEV_MODE: false
-      PLT_PORT: 3000
-      PLT_K8S_PROVIDER: "k8s"
-      PLT_DISABLE_EVENT_EXPORT: true
-      PLT_K8S_INSTALLED_NAMESPACE: "platformatic"
-    secrets: {}
-    resources:
-      limits:
-        cpu: 1
-        memory: 1Gi
-      requests:
-        cpu: 0.5
-        memory: 512Mi
-    service:
-      type: NodePort
-      port: 80
-      targetPort: 3000
+      tag: "latest"
+
+    # Set to false if machinist should not be installed
+    deploy: true
+
+    monitor:
+      enabled: true
+
+    serviceAccountName: "plt-pod-manager"
+
+    # TODO Should provide a url to documentation for each feature
+    features:
+      event_export:
+        enable: false
+      dev_mode:
+        enable: false
+
+    # Available levels: debug, info, warn, error
+    log_level: warn
+
+    # Additional pod annotations
+    #podAnnotations: {}
+
+    # Additional pod security
+    #podSecurityContext: {}
+
+    # Selector labels for the node to provision ICC to
+    #nodeSelector: {}
+
+    # Nodes to avoid
+    #tolerations: []
+
+    # Nodes to join
+    #affinity: {}

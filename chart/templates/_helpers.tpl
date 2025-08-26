@@ -63,3 +63,18 @@ Create the name of the service account to use
 {{- define "application.serviceAccountName" -}}
 platformatic
 {{- end }}
+
+{{/* External port number */}}
+{{- define "service.port" -}}
+80
+{{- end }}
+
+{{/* External service type */}}
+{{- define "service.type" -}}
+NodePort
+{{- end }}
+
+{{/* ICC databases */}}
+{{- define "service.icc.databases" -}}
+activities risk_cold_storage control_plane cron scaler trafficante user_manager cluster_manager compliance
+{{- end }}
