@@ -18,7 +18,6 @@ env:
 permissions:
   contents: read
   packages: write
-  id-token: write
 
 jobs:
 # Initialize
@@ -47,6 +46,9 @@ jobs:
     name: 'Helm'
     needs: [init]
     runs-on: 'ubuntu-latest'
+    permissions:
+      contents: read
+      packages: write
     steps:
       # Checkout - Repository
       - name: 'Checkout Repository'
