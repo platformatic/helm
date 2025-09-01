@@ -10,33 +10,74 @@ on:
         # - development
         - production
 
+env:
+  ENV_FILE: ./env.txt
+  HELM_DIRECTORY: './chart'
+
 jobs:
 # Initialize
   init:
     name: 'Initialize'
-    uses: platformatic/actions/.github/workflows/init.yml@main
-    with:
-      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-    secrets: inherit
+    runs-on: 'ubuntu-latest'
+    environment: ${{ inputs.ENVIRONMENT }}
+    steps:
+      # Environment - Configure
+      - name: 'Environment - Configure'
+        run: |
+          echo "REPOSITORY_NAME=$(echo "${{ github.repository }}" | awk -F / '{print $2}')" | tee -a ${GITHUB_ENV} ${{ env.ENV_FILE }}
+
+      # Environment - Upload
+      - name: 'Environment - Upload'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.sha }}
+          path: ${{ env.ENV_FILE }}
+          retention-days: 1
+          if-no-files-found: error
+          overwrite: true
 
 # Helm
   helm:
     name: 'Helm'
     needs: [init]
-    uses: platformatic/actions/.github/workflows/helm-push.yml@main
-    with:
-      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-      HELM_DIRECTORY: './chart'
-      REGISTRY: gcr
-      VISIBILITY: private
-    secrets: inherit
+    steps:
+      # Checkout - Repository
+      - name: 'Checkout Repository'
+        uses: actions/checkout@master
 
-# Clean Up
-  cleanup:
-    name: 'Clean Up'
-    if: always()
-    needs: [init, helm]
-    uses: platformatic/actions/.github/workflows/cleanup.yml@main
-    with:
-      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-    secrets: inherit
+      # Environment - Download
+      - name: 'Environment - Download'
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.sha }}
+
+      # Environment - Process
+      - name: 'Environment - Process'
+        run: |
+          cat ${{ env.ENV_FILE }} | while read LINE; do
+            echo ::add-mask::$(echo "${LINE}" | cut -d "=" -f2)
+            echo "${LINE}" >> ${GITHUB_ENV}
+          done
+          echo "HELM_NAME=$(cat ${{ env.HELM_DIRECTORY }}/Chart.yaml | yq -r .name)" | tee -a ${GITHUB_ENV} ${{ env.ENV_FILE }}
+          echo "HELM_VERSION=$(cat ${{ env.HELM_DIRECTORY }}/Chart.yaml | yq -r .version)" | tee -a ${GITHUB_ENV} ${{ env.ENV_FILE }}
+
+      - name: 'GCR - Configure'
+        run: |
+          GCR_REGISTRY="ghcr.io/platformatic"
+          echo "REGISTRY_URL=${GCR_REGISTRY}" | tee -a ${GITHUB_ENV} ${{ env.ENV_FILE }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Helm - Package
+      - name: 'Helm - Package'
+        run: |
+          helm package ${{ env.HELM_DIRECTORY }} --app-version ${{ env.HELM_VERSION }} --version ${{ env.HELM_VERSION }}
+
+      # Helm - Push
+      - name: 'Helm - Push'
+        run: helm push ${{ env.HELM_NAME }}-${{ env.HELM_VERSION }}.tgz oci://${{ env.REGISTRY_URL }}
