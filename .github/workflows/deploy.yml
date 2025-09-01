@@ -13,6 +13,7 @@ on:
 env:
   ENV_FILE: ./env.txt
   HELM_DIRECTORY: './chart'
+  HELM_NAME: 'helm'
 
 permissions:
   contents: read
@@ -63,7 +64,6 @@ jobs:
             echo ::add-mask::$(echo "${LINE}" | cut -d "=" -f2)
             echo "${LINE}" >> ${GITHUB_ENV}
           done
-          echo "HELM_NAME=$(cat ${{ env.HELM_DIRECTORY }}/Chart.yaml | yq -r .name)" | tee -a ${GITHUB_ENV} ${{ env.ENV_FILE }}
           echo "HELM_VERSION=$(cat ${{ env.HELM_DIRECTORY }}/Chart.yaml | yq -r .version)" | tee -a ${GITHUB_ENV} ${{ env.ENV_FILE }}
 
       - name: 'GCR - Configure'
