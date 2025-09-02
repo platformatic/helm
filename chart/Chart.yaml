@@ -1,6 +1,24 @@
 apiVersion: v2
 name: helm
+version: 4.0.0-alpha.6
+kubeVersion: >= v1.31
 description: Platformatic microservices
 type: application
-version: 4.0.0-alpha.6
+keywords:
+  - intelligent-command-center
+  - icc
+  - machinist
+  - platformatic
+home: https://platformatic.dev/
+sources:
+  - https://github.com/platformatic/helm
+  - https://github.com/platformatic/intelligent-command-center
+  - https://github.com/platformatic/machinist
+maintainers:
+  - name: Matthew (MzUgM)
+    email: matthew@platformatic.dev
+icon: ""
 appVersion: "v2"
+annotations:
+  platformatic.dev/intelligent-command-center: "v2"
+  platformatic.dev/machinist: "v2"
