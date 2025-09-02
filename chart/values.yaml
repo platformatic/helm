@@ -23,6 +23,9 @@ wattpro:
     enable: true
     # The name of the Prometheus PodMonitor
     name: "wattpro"
+    # This should match the location where wattpro applications will be deployed
+    namespaces:
+      - platformatic
     matchLabels:
       platformatic.dev/monitor: "prometheus"
     port: "metrics"

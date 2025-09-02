@@ -30,6 +30,8 @@ spec:
       targetLabel: instance
   namespaceSelector:
     matchNames:
-      - {{ $.Values.namespace | default "platformatic" }}
+      {{ range $namespace := .namespaces }}
+      - {{ . }}
+      {{- end }}
 {{- end }}
 {{- end }}
