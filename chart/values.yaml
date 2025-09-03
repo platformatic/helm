@@ -60,8 +60,9 @@ services:
         enable: false
       icc_jobs:
         enable: true
-      dev_mode:
-        enable: false
+      # Only supported in Enterprise releases
+      #dev_mode:
+      #  enable: false
 
     # Available levels: debug, info, warn, error
     log_level: warn
@@ -149,8 +150,9 @@ services:
     features:
       event_export:
         enable: false
-      dev_mode:
-        enable: false
+      # This features is only supported in Enterprise releases
+      #dev_mode:
+      #  enable: false
 
     # Available levels: debug, info, warn, error
     log_level: warn
