@@ -35,17 +35,17 @@ spec:
       imagePullSecrets:
         - name: {{ $.Values.imagePullSecret.name | default "image-pull-secret" }}
       {{- end }}
-
       serviceAccountName: {{ .serviceAccountName | default (include "application.serviceAccountName" $) }}
-
+      {{- with .podSecurityContext }}
       securityContext:
-        {{- toYaml .podSecurityContext | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .name }}
-
+          {{- with .securityContext }}
           securityContext:
-            {{- toYaml .securityContext | nindent 12 }}
-
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           image: "{{ .image.repository }}:{{ .image.tag | default "latest" }}"
           imagePullPolicy: {{ .image.pullPolicy | default "IfNotPresent" }}
 

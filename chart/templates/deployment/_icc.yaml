@@ -41,12 +41,16 @@ spec:
       {{- end }}
       {{- end }}
       serviceAccountName: {{ .serviceAccountName | default (include "application.serviceAccountName" $) }}
+      {{- with .podSecurityContext }}
       securityContext:
-        {{- toYaml .podSecurityContext | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .name }}
+          {{- with .securityContext }}
           securityContext:
-            {{- toYaml .securityContext | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           image: "{{ .image.repository }}:{{ .image.tag | default "latest" }}"
           imagePullPolicy: {{ .image.pullPolicy | default "IfNotPresent" }}
           env:
@@ -117,12 +121,12 @@ spec:
                   name: icc
                   key: user_manager_session
 
-           {{- with .login_methods.demo }}
-           {{- if .enable }}
-           - name: PLT_USER_MANAGER_SUPER_ADMIN_EMAIL
-             value: "demo@platformatic.dev"
-           {{- end }}
-           {{- end }}
+            {{- with .login_methods.demo }}
+            {{- if .enable }}
+            - name: PLT_USER_MANAGER_SUPER_ADMIN_EMAIL
+              value: "demo@platformatic.dev"
+            {{- end }}
+            {{- end }}
 
             {{- $login_methods := list }}
             {{- range $k,$v := .login_methods }}
