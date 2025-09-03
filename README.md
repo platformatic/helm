@@ -5,6 +5,18 @@ Helm chart to install Platformatic on a remote Kubernetes Cluster.
 For Enterprise specific instructions, see our [Enterprise
 README](./README-ENTERPRISE.md)
 
+Navigate:
+
+* [Requirements](#requirements)
+* [Architecture](#architecture)
+* [Configuration](#configuration)
+    * [Common](#common-parameters)
+    * [Watt](#watt)
+    * [Intelligent Command Center](#intelligent-command-center)
+    * [Machinist](#machinist)
+* [Installation](#installation)
+* [Notes](#notes)
+
 ## Requirements
 
 The following software is required but not set as an explicit dependency of our
@@ -102,49 +114,63 @@ Configure how the Intelligent Command Center can be accessed
 
 ## Installation
 
-## Testing
+> [!TIP]
+> We highly recommend using our install script which provides both interactive
+> and non-interactive forms of installing Intelligent Command Center,
+> Machinist, and a secure database configuration. Visit [our install script documentation]().
+
+Prerequisites:
+
+* Postgres cluster with databases configured
+* Prometheus installation
+* Valkey installation
+
+This is the minimal Helm installation command with Github OAuth for the
+Intelligent Command Center dashboard. Copy this into a file, update the
+variables, and execute the script.
 
 ```sh
-helm template ./chart -f ./chart/values.yaml
+# Name of the cloud provider being deployed to. Valid values are: aws, gcp, or left empty
+PLT_CLOUD_PROVIDER=""
+
+# Connection string to Postgres cluster
+PLT_DATABASE_URL=""
+
+# The URL from which Intelligent Command Center will be available
+# Note: These charts do not create or setup any Ingress
+PLT_PUBLIC_URL=""
+
+# Prometheus API URL
+PLT_PROMETHEUS_URL=""
+
+# Intelligent Command Center uses Valkey for caching. The same address can be
+# used for both variables
+PLT_VALKEY_APPS_ADDRESS=""
+PLT_VALKEY_ICC_ADDRESS=""
+
+# Github OAuth Credentials
+GITHUB_OAUTH_CLIENT_ID=""
+GITHUB_OAUTH_CLIENT_SECRET=""
+
+helm install platformatic oci://ghcr.io/platformatic/helm \
+    --version "^4.0.0" \
+    --create-namespace \
+    --namespace platformatic \
+    --set "cloud=$PLT_CLOUD_PROVIDER" \
+    --set "services.icc.database_url=$PLT_DATABASE_URL" \
+    --set "services.icc.public_url=$PLT_PUBLIC_URL" \
+    --set "services.icc.prometheus.url=$PLT_PROMETHEUS_URL" \
+    --set "services.icc.valkey.apps_url=$PLT_VALKEY_APPS_ADDRESS" \
+    --set "services.icc.valkey.icc_url=$PLT_VALKEY_ICC_ADDRESS" \
+    --set "services.icc.secrets.user_manager_session=$(openssl rand -base64 32)" \
+    --set "services.icc.secrets.icc_session=$(openssl rand -hex 32)" \
+    --set "services.icc.secrets.control_plane_keys=$(openssl rand -hex 32)" \
+    --set "services.icc.login_methods.github_oauth.enable=true" \
+    --set "services.icc.login_methods.github_oauth.client_id=$GITHUB_OAUTH_CLIENT_ID" \
+    --set "services.icc.login_methods.github_oauth.client_secret=$GITHUB_OAUTH_CLIENT_SECRET"
 ```
-
-## Pulling
-
-#### Authenticate to GHCR
-
-```sh
-echo "${GITHUB_TOKEN}" | helm registry login ghcr.io/platformatic --username ${USERNAME} --password-stdin
-```
-
-#### Pull from GHCR
-
-```sh
-helm pull oci://ghcr.io/platformatic/helm-3 --version ${VERSION}
-```
-
-## Installing
-
-#### Authenticate to EKS
-
-```sh
-aws eks update-kubeconfig --name ${CLUSTER_NAME} --region ${REGION} --profile ${PROFILE}
-```
-
-#### Install with Helm
-
-```sh
-helm upgrade --install --create-namespace platformatic oci://ghcr.io/platformatic/helm-3 --version ${VERSION} -n platformatic -f values.yml 
-```
-
-Available versions are found in the [container repository for our helm chart](https://github.com/orgs/platformatic/packages/container/package/helm)
 
 ## Notes
 
-- There is a bug in Helm v3.13.1. You may need to manually upgrade to the latest version: 
-  ```sh
-  curl -L -s https://git.io/get_helm.sh | bash -s -- --version v3.13.2
-  ```
-
-## Links
-
-- [Package Details](https://github.com/orgs/platformatic/packages/container/package/helm)
+* Only Helm CLI >= v3.13.2 is supported
+* Available versions are found in the [container repository for our helm chart](https://github.com/orgs/platformatic/packages/container/package/helm)
