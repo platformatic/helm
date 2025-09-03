@@ -55,7 +55,7 @@ spec:
             - name: PLT_LOGGER_LEVEL
               value: {{ .log_level }}
             - name: PLT_DEV_MODE
-              value: "{{ .features.dev_mode.enable }}"
+              value: '{{- dig "features" "dev_mode" "enable" false . }}'
             - name: PLT_K8S_PROVIDER
               value: "k8s"
             - name: PLT_DISABLE_EVENT_EXPORT

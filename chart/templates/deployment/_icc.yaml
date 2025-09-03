@@ -98,13 +98,13 @@ spec:
               value: "false"
               {{- end }}
             - name: DEV_K8S
-              value: "{{ .features.dev_mode.enable | default false }}"
+              value: '{{- dig "features" "dev_mode" "enable" false . }}'
 
             # Main service
             - name: DEMO_LOGIN
-              value: "{{ .features.dev_mode.enable | default false }}"
+              value: '{{- dig "features" "dev_mode" "enable" false . }}'
             - name: DEV
-              value: "{{ .features.dev_mode.enable | default false }}"
+              value: '{{- dig "features" "dev_mode" "enable" false . }}'
             - name: VITE_API_BASE_URL
               value: "{{ .public_url }}"
             - name: VITE_SERVER_URL
