@@ -9,7 +9,7 @@ Expand the name of the chart.
 Platformatic installation namespace
 */}}
 {{- define "install.namespace" -}}
-{{- .Values.platformaticNamespace | default "platformatic" }}
+{{- coalesce .Values.platformaticNamespace .Release.Namespace "platformatic" }}
 {{- end }}
 
 {{/*
