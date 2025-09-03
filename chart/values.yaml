@@ -79,11 +79,11 @@ services:
         #client_id: ""
         #client_secret: ""
       # These login methods are only supported in our Enterprise release
-      password:
-        enable: false
+      #password:
+        #enable: false
         #password: ""
-      demo:
-        enable: false
+      #demo:
+      #  enable: false
 
     # The URL that ICC will be accessed from
     # Some examples:

@@ -117,6 +117,13 @@ spec:
                   name: icc
                   key: user_manager_session
 
+           {{- with .login_methods.demo }}
+           {{- if .enable }}
+           - name: PLT_USER_MANAGER_SUPER_ADMIN_EMAIL
+             value: "demo@platformatic.dev"
+           {{- end }}
+           {{- end }}
+
             {{- $login_methods := list }}
             {{- range $k,$v := .login_methods }}
               {{- if $v.enable }}
