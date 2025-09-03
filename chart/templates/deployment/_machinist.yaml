@@ -8,7 +8,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .name }}
-  namespace: {{ $.Values.namespace | default "platformatic" }}
+  namespace: {{ include "install.namespace" $ }}
   labels:
     {{- include "application.labels" $ | nindent 4 }}
     {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
@@ -65,7 +65,7 @@ spec:
               value: "true"
               {{- end}}
             - name: PLT_K8S_INSTALLED_NAMESPACE
-              value: {{ $.Values.namespace | default "platformatic" }}
+              value: {{ include "install.namespace" $ }}
 
           {{- if .command }}
           command:

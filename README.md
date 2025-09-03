@@ -2,14 +2,30 @@
 
 Helm chart to install Platformatic on a remote Kubernetes Cluster.
 
+For Enterprise specific instructions, see our [Enterprise
+README](./README-ENTERPRISE.md)
+
+## Requirements
+
+The following software is required but not set as an explicit dependency of our
+charts due to the vast number of ways the software could be installed.
+
+### Prometheus CRDs
+
+| Name | Kind | Usage | Download |
+| --- | --- | --- | --- |
+| podmonitors.monitoring.coreos.com | PodMonitor | We apply a PodMonitor into any namespace that wattpro applications are running in. | |
+| servicemonitors.monitoring.coreos.com | ServiceMonitor | We use service monitor to track the metrics of Intelligent Command Center and Machinist. | | 
+
 ## Architecture
 
 The default values for this chart are in _chart/values.yaml_. This is a
 production-ready set of values except for the `secrets` portion.
 
-The values for development live in a separate yaml (_chart/values.dev.yaml_) and
-are meant to be applied on-top of the default values. This allows for overriding
-key settings.
+## Configuration
+
+
+## Installation
 
 ## Testing
 

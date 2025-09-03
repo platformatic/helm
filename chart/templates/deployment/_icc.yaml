@@ -7,7 +7,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .name }}
-  namespace: {{ $.Values.namespace | default "platformatic" }}
+  namespace: {{ include "install.namespace" $ }}
   labels:
     {{- include "application.labels" $ | nindent 4 }}
     {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
@@ -31,6 +31,7 @@ spec:
       imagePullSecrets:
         - name: {{ $.Values.imagePullSecret.name | default "image-pull-secret" }}
       {{- end }}
+
       {{- with .volumes }}
       volumes:
       {{- range $volume, $value := . }}
@@ -115,11 +116,6 @@ spec:
                 secretKeyRef:
                   name: icc
                   key: user_manager_session
-            {{- if .login_methods.demo.enable }}
-            - name: PLT_USER_MANAGER_SUPER_ADMIN_EMAIL
-              value: "demo@platformatic.dev"
-            {{- end }}
-
 
             {{- $login_methods := list }}
             {{- range $k,$v := .login_methods }}
