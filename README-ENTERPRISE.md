@@ -1,9 +1,8 @@
 # Helm
 
-Helm chart to install Platformatic on a remote Kubernetes Cluster.
+Helm chart to install Platformatic on a Kubernetes Cluster.
 
-For Enterprise specific instructions, see our [Enterprise
-README](./README-ENTERPRISE.md)
+For OSS specific instructions, see our [OSS README](./README.md)
 
 Navigate:
 
@@ -94,6 +93,12 @@ Configure how the Intelligent Command Center can be accessed
 | `services.icc.login_methods.github_oauth.enable` | Enable Github OAuth | false | Yes |
 | `services.icc.login_methods.github_oauth.client_id` | Required when Github is enabled | "" | No |
 | `services.icc.login_methods.github_oauth.client_secret` | Required when Github is enabled | "" | No |
+| `services.icc.login_methods.password.enable` | Enable password authentication. **Enterprise-only** | false | No |
+| `services.icc.login_methods.password.password` | Password will be stored in environment variables. **Enterprise-only** | "" | No |
+| `services.icc.login_methods.demo.enable` | Creates a fake super user to browse the dashboard. **Enterprise-only** | false | No |
+
+If no login method is enabled, Intelligent Command Center will still start but
+the dashboard will show a warning that no method was chosen.
 
 ### Machinist
 
