@@ -52,14 +52,16 @@ services:
 
     # TODO Should provide a url to documentation for each feature
     features:
+      cache:
+        enable: false
       cache_recommendations:
         enable: false
       risk_service_dump:
         enable: false
       ffc:
         enable: false
-      icc_jobs:
-        enable: true
+      scaler_trends_learning:
+        enable: false
 
     # Available levels: debug, info, warn, error
     log_level: warn

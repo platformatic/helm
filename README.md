@@ -77,10 +77,11 @@ production-ready set of values except for the `secrets` portion.
 
 | Name | Description | Default Value | Required |
 | --- | --- | --- | --- |
+| `services.icc.features.cache.enable` | Enable caching | false | No |
 | `services.icc.features.cache_recommendations.enable` | Enable cache recommendations | false | No |
 | `services.icc.features.risk_service_dump.enable` | Enable long-term storage for the risk service | false | No |
-| `services.icc.features.ffc.enable` | I don't know | false | No |
-| `services.icc.features.icc_jobs.enable` | Enable default cron jobs | false | No |
+| `services.icc.features.ffc.enable` | Fussion, Fission & Cascade | false | No |
+| `services.icc.features.scaler_trends_learning.enable` | Enable scaler trend learning | false | No |
 
 #### Login methods
 

@@ -85,18 +85,16 @@ spec:
               value: http://compliance.plt.local
             - name: PLT_MACHINIST_URL
               value: http://machinist.platformatic
+            - name: PLT_FEATURE_CACHE
+              value: "{{ features.cache.enable | default false }}"
             - name: PLT_FEATURE_CACHE_RECOMMENDATIONS
               value: "{{ .features.cache_recommendations.enable | default false }}"
             - name: PLT_FEATURE_RISK_SERVICE_DUMP
               value: "{{ .features.risk_service_dump.enable | default false }}"
             - name: PLT_FEATURE_FFC
               value: "{{ .features.ffc.enable | default false }}"
-            - name: PLT_CRON_DISABLE_ICC_JOBS
-              {{- if not .features.icc_jobs.enable }}
-              value: "true"
-              {{- else }}
-              value: "false"
-              {{- end }}
+            - name: PLT_FEATURE_SCALER_TRENDS_LEARNING
+              value: "{{ .features.scaler_trends_learning.enable | default false }}"
             - name: DEV_K8S
               value: '{{- dig "features" "dev_mode" "enable" false . }}'
 
