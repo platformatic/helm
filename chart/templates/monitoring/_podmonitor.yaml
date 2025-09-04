@@ -7,7 +7,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: {{ .name }}
-  namespace: {{ $.Values.namespace | default "platformatic" }}
+  namespace: {{ include "install.namespace" $ }}
   labels:
     {{- include "application.labels" $ | nindent 4 }}
     {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
@@ -30,7 +30,8 @@ spec:
       targetLabel: instance
   namespaceSelector:
     matchNames:
-      {{ range $namespace := .namespaces }}
+      {{- $namespaces := include "install.allNamespaces" $ | trim | splitList "\n" }}
+      {{- range $namespaces }}
       - {{ . }}
       {{- end }}
 {{- end }}

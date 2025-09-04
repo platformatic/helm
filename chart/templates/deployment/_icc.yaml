@@ -7,7 +7,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .name }}
-  namespace: {{ $.Values.namespace | default "platformatic" }}
+  namespace: {{ include "install.namespace" $ }}
   labels:
     {{- include "application.labels" $ | nindent 4 }}
     {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
@@ -31,6 +31,7 @@ spec:
       imagePullSecrets:
         - name: {{ $.Values.imagePullSecret.name | default "image-pull-secret" }}
       {{- end }}
+
       {{- with .volumes }}
       volumes:
       {{- range $volume, $value := . }}
@@ -40,12 +41,16 @@ spec:
       {{- end }}
       {{- end }}
       serviceAccountName: {{ .serviceAccountName | default (include "application.serviceAccountName" $) }}
+      {{- with .podSecurityContext }}
       securityContext:
-        {{- toYaml .podSecurityContext | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .name }}
+          {{- with .securityContext }}
           securityContext:
-            {{- toYaml .securityContext | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           image: "{{ .image.repository }}:{{ .image.tag | default "latest" }}"
           imagePullPolicy: {{ .image.pullPolicy | default "IfNotPresent" }}
           env:
@@ -80,26 +85,24 @@ spec:
               value: http://compliance.plt.local
             - name: PLT_MACHINIST_URL
               value: http://machinist.platformatic
+            - name: PLT_FEATURE_CACHE
+              value: "{{ features.cache.enable | default false }}"
             - name: PLT_FEATURE_CACHE_RECOMMENDATIONS
               value: "{{ .features.cache_recommendations.enable | default false }}"
             - name: PLT_FEATURE_RISK_SERVICE_DUMP
               value: "{{ .features.risk_service_dump.enable | default false }}"
             - name: PLT_FEATURE_FFC
               value: "{{ .features.ffc.enable | default false }}"
-            - name: PLT_CRON_DISABLE_ICC_JOBS
-              {{- if not .features.icc_jobs.enable }}
-              value: "true"
-              {{- else }}
-              value: "false"
-              {{- end }}
+            - name: PLT_FEATURE_SCALER_TRENDS_LEARNING
+              value: "{{ .features.scaler_trends_learning.enable | default false }}"
             - name: DEV_K8S
-              value: "{{ .features.dev_mode.enable | default false }}"
+              value: '{{- dig "features" "dev_mode" "enable" false . }}'
 
             # Main service
             - name: DEMO_LOGIN
-              value: "{{ .features.dev_mode.enable | default false }}"
+              value: '{{- dig "features" "dev_mode" "enable" false . }}'
             - name: DEV
-              value: "{{ .features.dev_mode.enable | default false }}"
+              value: '{{- dig "features" "dev_mode" "enable" false . }}'
             - name: VITE_API_BASE_URL
               value: "{{ .public_url }}"
             - name: VITE_SERVER_URL
@@ -115,11 +118,13 @@ spec:
                 secretKeyRef:
                   name: icc
                   key: user_manager_session
-            {{- if .login_methods.demo.enable }}
+
+            {{- with .login_methods.demo }}
+            {{- if .enable }}
             - name: PLT_USER_MANAGER_SUPER_ADMIN_EMAIL
               value: "demo@platformatic.dev"
             {{- end }}
-
+            {{- end }}
 
             {{- $login_methods := list }}
             {{- range $k,$v := .login_methods }}

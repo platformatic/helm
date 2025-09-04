@@ -6,10 +6,32 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
+Platformatic installation namespace
+*/}}
+{{- define "install.namespace" -}}
+{{- coalesce .Values.platformaticNamespace .Release.Namespace "platformatic" }}
+{{- end }}
+
+{{/*
+All namespaces - returns newline-separated list
+*/}}
+{{- define "install.allNamespaces" -}}
+{{- $appNs := .Values.applicationNamespaces }}
+{{- if $appNs }}
+{{- range $appNs }}
+{{ . }}
+{{- end }}
+{{- else }}
+{{- $defaultNs := include "install.namespace" $ }}
+{{ $defaultNs }}
+{{- end }}
+{{- end }}
+
+{{/*
 ImagePullSecret - DockerConfig
 */}}
 {{- define "imagePullSecret.dockerConfig" -}}
-{"auths":{"{{ .Values.imagePullSecret.registry }}":{"auth":"{{- printf "%s:%s" .Values.imagePullSecret.user .Values.imagePullSecret.token | b64enc -}}"}}}
+{"auths":{"{{ .registry }}":{"auth":"{{- printf "%s:%s" .user .token | b64enc -}}"}}}
 {{- end }}
 
 {{/*

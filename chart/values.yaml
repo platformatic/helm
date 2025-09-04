@@ -2,30 +2,27 @@
 # Supported values: aws, gcp
 cloud: ""
 
-# The namespace all Platformatic resources will be saved
-namespace: platformatic
+# The namespace all Platformatic resources will be installed
+# Defaults to 'platformatic'
+#platformaticNamespace: platformatic
 
-# Namespaces where platformatic will interact. If your applications are deployed
-# to a namespace other than `platformatic`, add the namespace names to the list
-podManagerServiceAccount:
-  bindToNamespaces:
-    - platformatic
+# All the namespaces where a watt application will run
+# If not set, defaults to `platformaticNamespace`
+#applicationNamespaces: []
 
 # The location to download Platformatic images from along with credentials
-imagePullSecret:
-  registry: ghcr.io
-  user: ""
-  token: ""
+# Only needed for Enterprise releases
+#imagePullSecret:
+#  registry: ""
+#  user: ""
+#  token: ""
 
-wattpro:
-  # Configure monitoring of wattpro applications
+watt:
+  # Configure monitoring of watt applications
   monitor:
     enable: true
     # The name of the Prometheus PodMonitor
-    name: "wattpro"
-    # This should match the location where wattpro applications will be deployed
-    namespaces:
-      - platformatic
+    name: "plt-watt"
     matchLabels:
       platformatic.dev/monitor: "prometheus"
     port: "metrics"
@@ -45,25 +42,25 @@ services:
 
     # Monitor via Prometheus
     monitor:
-      enabled: true
+      enable: true
 
     # We have a changelog available at: 
     image:
-      repository: ghcr.io/platformatic/plt-icc-3
-      pullPolicy: Always
+      repository: platformatic/intelligent-command-center
+      pullPolicy: IfNotPresent
       tag: "latest"
 
     # TODO Should provide a url to documentation for each feature
     features:
+      cache:
+        enable: false
       cache_recommendations:
         enable: false
       risk_service_dump:
         enable: false
       ffc:
         enable: false
-      icc_jobs:
-        enable: true
-      dev_mode:
+      scaler_trends_learning:
         enable: false
 
     # Available levels: debug, info, warn, error
@@ -81,10 +78,12 @@ services:
         enable: false
         #client_id: ""
         #client_secret: ""
-      password:
-        enable: false
-      demo:
-        enable: false
+      # These login methods are only supported in our Enterprise release
+      #password:
+        #enable: false
+        #password: ""
+      #demo:
+      #  enable: false
 
     # The URL that ICC will be accessed from
     # Some examples:
@@ -134,23 +133,21 @@ services:
 
     # We have a changelog available at: 
     image:
-      repository: ghcr.io/platformatic/plt-machinist-3
-      pullPolicy: Always
+      repository: platformatic/machinist
+      pullPolicy: IfNotPresent
       tag: "latest"
 
     # Set to false if machinist should not be installed
     deploy: true
 
     monitor:
-      enabled: true
+      enable: true
 
     serviceAccountName: "plt-pod-manager"
 
     # TODO Should provide a url to documentation for each feature
     features:
       event_export:
-        enable: false
-      dev_mode:
         enable: false
 
     # Available levels: debug, info, warn, error
