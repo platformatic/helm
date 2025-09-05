@@ -211,6 +211,17 @@ spec:
                   key: "{{ . }}"
             {{- end }}
 
+            {{- with .elasticache }}
+            - name: PLT_APPLICATIONS_CACHE_PROVIDER
+              value: elasticache
+            - name: PLT_CACHE_MANAGER_CONFIGURE_KEYSPACE_EVENT_NOTIFY
+              value: "false"
+            - name: PLT_APPLICATIONS_ELASTICACHE_REGION
+              value: {{ .region }}
+            - name: PLT_APPLICATIONS_ELASTICACHE_CLUSTERID_PREFIX
+              value: {{ .cluster_name }}
+            {{- end}}
+
           {{- if .command }}
           command:
             {{- toYaml .command | nindent 12 }}
