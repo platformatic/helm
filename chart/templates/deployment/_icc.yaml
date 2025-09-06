@@ -86,7 +86,7 @@ spec:
             - name: PLT_MACHINIST_URL
               value: http://machinist.platformatic
             - name: PLT_FEATURE_CACHE
-              value: "{{ features.cache.enable | default false }}"
+              value: "{{ .features.cache.enable | default false }}"
             - name: PLT_FEATURE_CACHE_RECOMMENDATIONS
               value: "{{ .features.cache_recommendations.enable | default false }}"
             - name: PLT_FEATURE_RISK_SERVICE_DUMP
