@@ -86,7 +86,7 @@ spec:
             - name: PLT_MACHINIST_URL
               value: http://machinist.platformatic
             - name: PLT_FEATURE_CACHE
-              value: "{{ features.cache.enable | default false }}"
+              value: "{{ .features.cache.enable | default false }}"
             - name: PLT_FEATURE_CACHE_RECOMMENDATIONS
               value: "{{ .features.cache_recommendations.enable | default false }}"
             - name: PLT_FEATURE_RISK_SERVICE_DUMP
@@ -210,6 +210,17 @@ spec:
                   name: icc-databases
                   key: "{{ . }}"
             {{- end }}
+
+            {{- with .elasticache }}
+            - name: PLT_APPLICATIONS_CACHE_PROVIDER
+              value: elasticache
+            - name: PLT_CACHE_MANAGER_CONFIGURE_KEYSPACE_EVENT_NOTIFY
+              value: "false"
+            - name: PLT_APPLICATIONS_ELASTICACHE_REGION
+              value: {{ .region }}
+            - name: PLT_APPLICATIONS_ELASTICACHE_CLUSTERID_PREFIX
+              value: {{ .cluster_name }}
+            {{- end}}
 
           {{- if .command }}
           command:

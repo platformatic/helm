@@ -44,6 +44,13 @@ services:
     monitor:
       enable: true
 
+    # Configure elasticache
+    # See <doc link here>
+    #elasticache:
+    #  role_arn: ""
+    #  region: ""
+    #  cluster_name: ""
+
     # We have a changelog available at: 
     image:
       repository: platformatic/intelligent-command-center

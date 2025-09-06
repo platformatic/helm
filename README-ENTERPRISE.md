@@ -72,6 +72,14 @@ production-ready set of values except for the `secrets` portion.
 | `services.icc.secrets.control_plane_keys` | TODO | "" | Yes |
 | `services.icc.secrets.user_manager_session` | TODO | "" | Yes |
 
+#### Elasticache
+
+| Name | Description | Default Value | Required |
+| --- | --- | --- | --- |
+| `services.icc.elasticache.role_arn` | The role ARN | "" | No |
+| `services.icc.elasticache.region` | Region the cluster is in | "" | No |
+| `services.icc.elasticache.cluster_name` | Name of the Elasticache cluster | "" | No |
+
 #### Features
 
 | Name | Description | Default Value | Required |
