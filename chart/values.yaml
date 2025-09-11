@@ -12,10 +12,10 @@ cloud: ""
 
 # The location to download Platformatic images from along with credentials
 # Only needed for Enterprise releases
-#imagePullSecret:
+imagePullSecret:
 #  registry: ""
-#  user: ""
-#  token: ""
+  user: "platformatic"
+  token: ""
 
 watt:
   # Configure monitoring of watt applications
@@ -53,7 +53,7 @@ services:
 
     # We have a changelog available at: 
     image:
-      repository: platformatic/intelligent-command-center
+      repository: platformatic/enterprise-icc
       pullPolicy: IfNotPresent
       tag: "latest"
 
