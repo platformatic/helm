@@ -61,6 +61,8 @@ spec:
               value: "{{ .log_level }}"
             - name: PLT_EXTERNAL_TRAFFICANTE_URL
               value: http://icc.platformatic/trafficante
+            - name: PLT_EXTERNAL_TRAFFIC_INSPECTOR_URL
+              value: http://icc.platformatic/traffic-inspector
             - name: PLT_EXTERNAL_ACTIVITIES_URL
               value: http://icc.platformatic/activities
             - name: PLT_EXTERNAL_COMPLIANCE_URL
