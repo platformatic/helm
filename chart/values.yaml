@@ -70,6 +70,7 @@ services:
       PORT: 3042
       DEV_K8S: false
       PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic.svc.cluster.local/trafficante
+      PLT_EXTERNAL_TRAFFIC_INSPECTOR_URL: http://icc.platformatic.svc.cluster.local/traffic-inspector
       PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic.svc.cluster.local/activities
       PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic.svc.cluster.local/compliance
       PLT_EXTERNAL_CRON_URL: http://icc.platformatic.svc.cluster.local/cron
@@ -128,6 +129,8 @@ services:
       PLT_CRON_DATABASE_URL: ""
       # Trafficante
       PLT_TRAFFICANTE_DATABASE_URL: ""
+      # Traffic Inspector
+      PLT_TRAFFIC_INSPECTOR_DATABASE_URL: ""
       # Scaler
       PLT_SCALER_DATABASE_URL: ""
       # Risk Cold Storage

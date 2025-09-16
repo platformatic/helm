@@ -13,6 +13,7 @@ services:
       PLT_ICC_LOGGER_LEVEL: "info"
       PLT_MACHINIST_URL: http://machinist.platformatic.svc.cluster.local:3042
       PLT_EXTERNAL_TRAFFICANTE_URL: http://icc.platformatic.svc.cluster.local:3042/trafficante
+      PLT_EXTERNAL_TRAFFIC_INSPECTOR_URL: http://icc.platformatic.svc.cluster.local:3042/traffic-inspector
       PLT_EXTERNAL_ACTIVITIES_URL: http://icc.platformatic.svc.cluster.local:3042/activities
       PLT_EXTERNAL_COMPLIANCE_URL: http://icc.platformatic.svc.cluster.local:3042/compliance
       PLT_EXTERNAL_CRON_URL: http://icc.platformatic.svc.cluster.local:3042/cron
@@ -70,6 +71,9 @@ services:
 
       # Trafficante
       PLT_TRAFFICANTE_DATABASE_URL: "postgres://postgres:postgres@dbtrafficante-postgresql.default.svc.cluster.local/trafficante"
+
+      # Traffic Inspector
+      PLT_TRAFFIC_INSPECTOR_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/traffic_inspector"
 
       # Scaler
       PLT_SCALER_DATABASE_URL: "postgres://postgres:postgres@postgresql-dbicc.default.svc.cluster.local/scaler"
