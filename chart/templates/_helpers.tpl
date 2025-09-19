@@ -31,7 +31,7 @@ All namespaces - returns newline-separated list
 ImagePullSecret - DockerConfig
 */}}
 {{- define "imagePullSecret.dockerConfig" -}}
-{"auths":{"{{ .registry }}":{"auth":"{{- printf "%s:%s" .user .token | b64enc -}}"}}}
+{"auths":{"{{ .registry | default "docker.io" }}":{"auth":"{{- printf "%s:%s" .user .token | b64enc -}}"}}}
 {{- end }}
 
 {{/*
