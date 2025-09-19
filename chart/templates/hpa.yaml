@@ -14,8 +14,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .name }}
-  minReplicas: 1
-  maxReplicas: 3
+  minReplicas: {{ .replicas.min | default 1 }}
+  maxReplicas: {{ .replicas.max | default 3 }}
   metrics:
     - type: Resource
       resource:
