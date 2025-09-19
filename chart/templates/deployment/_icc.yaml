@@ -162,6 +162,11 @@ spec:
                 secretKeyRef:
                   name: icc-github-oauth
                   key: client_secret
+            - name: PLT_USER_MANAGER_SUPER_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: icc-github-oauth
+                  key: valid_emails
             {{- end }}
 
             {{- if .login_methods.google.enable }}
@@ -175,6 +180,11 @@ spec:
                 secretKeyRef:
                   name: icc-google-oauth
                   key: client_secret
+            - name: PLT_USER_MANAGER_SUPER_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: icc-google-oauth
+                  key: valid_emails
             {{- end }}
 
             - name: PLT_ICC_SESSION_SECRET

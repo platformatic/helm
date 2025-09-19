@@ -81,10 +81,12 @@ services:
         enable: false
         #client_id: ""
         #client_secret: ""
+        #valid_emails: []
       github:
         enable: false
         #client_id: ""
         #client_secret: ""
+        #valid_emails: []
 
     # The URL that ICC will be accessed from
     # Some examples:
