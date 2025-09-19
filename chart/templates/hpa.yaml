@@ -1,11 +1,11 @@
-{{- range $service, $val := .Values.services }}
+{{- with .Values.services.icc }}
 {{- if .deploy }}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ .name }}
-  namespace: {{ $.Values.namespace | default "platformatic" }}
+  namespace: {{ include "install.namespace" $ }}
   labels:
     {{- include "application.labels" $ | nindent 4 }}
     {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
@@ -14,8 +14,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .name }}
-  minReplicas: 1
-  maxReplicas: 3
+  minReplicas: {{ .replicas.min | default 1 }}
+  maxReplicas: {{ .replicas.max | default 3 }}
   metrics:
     - type: Resource
       resource:

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: helm
-version: 4.0.0-alpha.11
+version: 4.0.0-alpha.12
 kubeVersion: ">= 1.30.0-0"
 description: Platformatic microservices
 type: application
