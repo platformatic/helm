@@ -97,12 +97,12 @@ Configure how the Intelligent Command Center can be accessed
 
 | Name | Description | Default Value | Required |
 | --- | --- | --- | --- |
-| `services.icc.login_methods.google_oauth.enable` | Enable Google OAuth | false | Yes |
-| `services.icc.login_methods.google_oauth.client_id` | Required when Google is enabled | "" | No |
-| `services.icc.login_methods.google_oauth.client_secret` | Required when Google is enabled | "" | No |
-| `services.icc.login_methods.github_oauth.enable` | Enable Github OAuth | false | Yes |
-| `services.icc.login_methods.github_oauth.client_id` | Required when Github is enabled | "" | No |
-| `services.icc.login_methods.github_oauth.client_secret` | Required when Github is enabled | "" | No |
+| `services.icc.login_methods.google.enable` | Enable Google OAuth | false | Yes |
+| `services.icc.login_methods.google.client_id` | Required when Google is enabled | "" | No |
+| `services.icc.login_methods.google.client_secret` | Required when Google is enabled | "" | No |
+| `services.icc.login_methods.github.enable` | Enable Github OAuth | false | Yes |
+| `services.icc.login_methods.github.client_id` | Required when Github is enabled | "" | No |
+| `services.icc.login_methods.github.client_secret` | Required when Github is enabled | "" | No |
 
 ### Machinist
 
@@ -174,9 +174,9 @@ helm install platformatic oci://ghcr.io/platformatic/helm \
     --set "services.icc.secrets.user_manager_session=$(openssl rand -base64 32)" \
     --set "services.icc.secrets.icc_session=$(openssl rand -hex 32)" \
     --set "services.icc.secrets.control_plane_keys=$(openssl rand -hex 32)" \
-    --set "services.icc.login_methods.github_oauth.enable=true" \
-    --set "services.icc.login_methods.github_oauth.client_id=$GITHUB_OAUTH_CLIENT_ID" \
-    --set "services.icc.login_methods.github_oauth.client_secret=$GITHUB_OAUTH_CLIENT_SECRET"
+    --set "services.icc.login_methods.github.enable=true" \
+    --set "services.icc.login_methods.github.client_id=$GITHUB_OAUTH_CLIENT_ID" \
+    --set "services.icc.login_methods.github.client_secret=$GITHUB_OAUTH_CLIENT_SECRET"
 ```
 
 ## Notes

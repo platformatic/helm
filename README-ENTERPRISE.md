@@ -96,12 +96,12 @@ Configure how the Intelligent Command Center can be accessed
 
 | Name | Description | Default Value | Required |
 | --- | --- | --- | --- |
-| `services.icc.login_methods.google_oauth.enable` | Enable Google OAuth | false | Yes |
-| `services.icc.login_methods.google_oauth.client_id` | Required when Google is enabled | "" | No |
-| `services.icc.login_methods.google_oauth.client_secret` | Required when Google is enabled | "" | No |
-| `services.icc.login_methods.github_oauth.enable` | Enable Github OAuth | false | Yes |
-| `services.icc.login_methods.github_oauth.client_id` | Required when Github is enabled | "" | No |
-| `services.icc.login_methods.github_oauth.client_secret` | Required when Github is enabled | "" | No |
+| `services.icc.login_methods.google.enable` | Enable Google OAuth | false | Yes |
+| `services.icc.login_methods.google.client_id` | Required when Google is enabled | "" | No |
+| `services.icc.login_methods.google.client_secret` | Required when Google is enabled | "" | No |
+| `services.icc.login_methods.github.enable` | Enable Github OAuth | false | Yes |
+| `services.icc.login_methods.github.client_id` | Required when Github is enabled | "" | No |
+| `services.icc.login_methods.github.client_secret` | Required when Github is enabled | "" | No |
 | `services.icc.login_methods.password.enable` | Enable password authentication. **Enterprise-only** | false | No |
 | `services.icc.login_methods.password.password` | Password will be stored in environment variables. **Enterprise-only** | "" | No |
 | `services.icc.login_methods.demo.enable` | Creates a fake super user to browse the dashboard. **Enterprise-only** | false | No |
@@ -147,6 +147,9 @@ variables, and execute the script.
 # Name of the cloud provider being deployed to. Valid values are: aws, gcp, or left empty
 PLT_CLOUD_PROVIDER=""
 
+# Image pull secret token
+DOCKER_TOKEN=""
+
 # Connection string to Postgres cluster
 PLT_DATABASE_URL=""
 
@@ -171,6 +174,8 @@ helm install platformatic oci://ghcr.io/platformatic/helm \
     --create-namespace \
     --namespace platformatic \
     --set "cloud=$PLT_CLOUD_PROVIDER" \
+    --set "imagePullSecret.token=${DOCKER_TOKEN}" \
+    --set "imagePullSecret.user=platformatic" \
     --set "services.icc.database_url=$PLT_DATABASE_URL" \
     --set "services.icc.public_url=$PLT_PUBLIC_URL" \
     --set "services.icc.prometheus.url=$PLT_PROMETHEUS_URL" \
@@ -179,9 +184,9 @@ helm install platformatic oci://ghcr.io/platformatic/helm \
     --set "services.icc.secrets.user_manager_session=$(openssl rand -base64 32)" \
     --set "services.icc.secrets.icc_session=$(openssl rand -hex 32)" \
     --set "services.icc.secrets.control_plane_keys=$(openssl rand -hex 32)" \
-    --set "services.icc.login_methods.github_oauth.enable=true" \
-    --set "services.icc.login_methods.github_oauth.client_id=$GITHUB_OAUTH_CLIENT_ID" \
-    --set "services.icc.login_methods.github_oauth.client_secret=$GITHUB_OAUTH_CLIENT_SECRET"
+    --set "services.icc.login_methods.github.enable=true" \
+    --set "services.icc.login_methods.github.client_id=$GITHUB_OAUTH_CLIENT_ID" \
+    --set "services.icc.login_methods.github.client_secret=$GITHUB_OAUTH_CLIENT_SECRET"
 ```
 
 ## Notes
