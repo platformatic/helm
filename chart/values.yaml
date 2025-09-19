@@ -77,20 +77,14 @@ services:
     # Change `enable` to `true` to use a method
     # At least one method must be enabled
     login_methods:
-      google_oauth:
+      google:
         enable: false
         #client_id: ""
         #client_secret: ""
-      github_oauth:
+      github:
         enable: false
         #client_id: ""
         #client_secret: ""
-      # These login methods are only supported in our Enterprise release
-      #password:
-        #enable: false
-        #password: ""
-      #demo:
-      #  enable: false
 
     # The URL that ICC will be accessed from
     # Some examples:
