@@ -1,5 +1,4 @@
-{
-  "databases": [
-  "{{ include "service.icc.databases" . | trim | replace " " "\",\"" }}"
-  ]
-}
+Thanks for installing Platformatic. Checkout our documentation to integerate your
+applications into the Intelligent Command Center.
+
+Visit https://platformatic.dev/docs/Overview

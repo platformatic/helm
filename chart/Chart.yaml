@@ -1,6 +1,6 @@
 apiVersion: v2
 name: helm
-version: 4.0.0-alpha.13
+version: 4.0.0
 kubeVersion: ">= 1.30.0-0"
 description: Platformatic microservices
 type: application
@@ -15,8 +15,8 @@ sources:
   - https://github.com/platformatic/intelligent-command-center
   - https://github.com/platformatic/machinist
 maintainers:
-  - name: Matthew (MzUgM)
-    email: matthew@platformatic.dev
+  - name: Platformatic Team
+    email: info@platformatic.dev
 icon: "https://cdn.hashnode.com/res/hashnode/image/upload/v1727183405468/9f1d8161-aee0-4422-af77-111e9ea87aef.png?w=1000&h=250&auto=compress,format&format=png"
 appVersion: "v2"
 annotations:
