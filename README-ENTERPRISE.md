@@ -72,13 +72,18 @@ production-ready set of values except for the `secrets` portion.
 | `services.icc.secrets.control_plane_keys` | TODO | "" | Yes |
 | `services.icc.secrets.user_manager_session` | TODO | "" | Yes |
 
-#### Elasticache
+#### AWS Managed Services
+
+These managed services are only accessible through IRSA which means ICC must be
+running in AWS-managed Kubernetes. As well, [`cloud` must be set to `aws`](#common-parameters).
 
 | Name | Description | Default Value | Required |
 | --- | --- | --- | --- |
-| `services.icc.elasticache.role_arn` | The role ARN | "" | No |
-| `services.icc.elasticache.region` | Region the cluster is in | "" | No |
-| `services.icc.elasticache.cluster_name` | Name of the Elasticache cluster | "" | No |
+| `services.icc.aws.role_arn` | The role ARN | "" | No |
+| `services.icc.aws.elasticache.region` | Region the cluster is in | "" | No |
+| `services.icc.aws.elasticache.cluster_name` | Name of the Elasticache cluster | "" | No |
+| `services.icc.aws.amp.region` | Region for AMP is in | "" | No |
+| `services.icc.aws.amp.workspace_id` | AMP workspace | "" | No |
 
 #### Features
 
