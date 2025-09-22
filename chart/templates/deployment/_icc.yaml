@@ -214,6 +214,11 @@ spec:
                 secretKeyRef:
                   name: icc-databases
                   key: "risk_cold_storage"
+            - name: PLT_TRAFFIC_INSPECTOR_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: icc-databases
+                  key: trafficante
 
             {{- range (include "service.icc.databases" . | trim | split " ") }}
             - name: {{ printf "PLT_%s_DATABASE_URL" (upper .) }}

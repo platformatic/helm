@@ -97,6 +97,7 @@ NodePort
 {{- end }}
 
 {{/* ICC databases */}}
+{{/* Using trafficante database name so that we an safely upgrade existing users */}}
 {{- define "service.icc.databases" -}}
-activities risk_cold_storage control_plane cron scaler trafficante traffic_inspector user_manager cluster_manager compliance
+activities risk_cold_storage control_plane cron scaler trafficante user_manager cluster_manager compliance
 {{- end }}
