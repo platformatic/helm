@@ -100,9 +100,11 @@ Configure how the Intelligent Command Center can be accessed
 | `services.icc.login_methods.google.enable` | Enable Google OAuth | false | Yes |
 | `services.icc.login_methods.google.client_id` | Required when Google is enabled | "" | No |
 | `services.icc.login_methods.google.client_secret` | Required when Google is enabled | "" | No |
+| `services.icc.login_methods.google.valid_emails` | Required when Google is enabled | "" | No |
 | `services.icc.login_methods.github.enable` | Enable Github OAuth | false | Yes |
 | `services.icc.login_methods.github.client_id` | Required when Github is enabled | "" | No |
 | `services.icc.login_methods.github.client_secret` | Required when Github is enabled | "" | No |
+| `services.icc.login_methods.github.valid_emails` | Required when Github is enabled | "" | No |
 
 ### Machinist
 
