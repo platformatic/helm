@@ -240,6 +240,8 @@ spec:
             {{- end }}
 
             {{- with .aws }}
+            - name: PLT_AWS_SA_ROLE_ARN
+              value: {{ .role_arn }}
             {{- with .elasticache }}
             - name: PLT_APPLICATIONS_CACHE_PROVIDER
               value: elasticache
