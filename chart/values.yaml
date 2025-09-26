@@ -27,6 +27,18 @@ watt:
       platformatic.dev/monitor: "prometheus"
     port: "metrics"
 
+  # Configure Pod scaling settings of watt applications
+  scaling:
+    # These labels can be applied to watt replication controllers (Deployment, ReplicaSet, etc)
+    # to control the minimum and maximum number of Pods that the Autoscaler will scale to
+    labels:
+      minimum_pods:
+        name: icc.platformatic.dev/scaler-min
+        default_value: "1"
+      maximum_pods:
+        name: icc.platformatic.dev/scaler-max
+        default_value: "3"
+
 # Platformatic service configuration
 # Installation documentation is available at:
 services:

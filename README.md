@@ -52,6 +52,10 @@ production-ready set of values except for the `secrets` portion.
 | `watt.monitor.name` | The name of the PodMonitor resource | plt-watt |
 | `watt.monitor.matchLabels` | Labels that will be applied to watt applications after they connect to ICC | `platformatic.dev/monitor: "prometheus"` |
 | `watt.monitor.port` | The name of the port to get metrics from | metrics |
+| `watt.scaling.labels.minimum_pods.name` | The label key for minimum pod scaling | icc.platformatic.dev/scaler-min |
+| `watt.scaling.labels.minimum_pods.default_value` | Minimum number of pods to scale down to if the label is not set | 1 |
+| `watt.scaling.labels.maximum_pods.name` | The label key for maximum pod scaling | icc.platformatic.dev/scaler-max |
+| `watt.scaling.labels.maximum_pods.default_value` | Maximum number of pods to scale up to if the label is not set | 3 |
 
 ### Intelligent Command Center
 
