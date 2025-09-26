@@ -155,6 +155,17 @@ spec:
             - name: PLT_SCALER_POD_MAX_DEFAULT_VALUE
               value: {{ $.Values.watt.scaling.labels.maximum_pods.default_value }}
 
+            {{- with .aws }}
+            {{- with .amp }}
+            - name: PLT_METRICS_PROMETHEUS_USE_AMP
+              value: "true"
+            - name: PLT_METRICS_AMP_REGION
+              value: {{ .region }}
+            - name: PLT_METRICS_AMP_WORKSPACE_ID
+              value: {{ .workspace_id }}
+            {{- end }}
+            {{- end }}
+
             # Compliance
             - name: PLT_COMPLIANCE_RULES_DIR
               value: "./rules"
@@ -236,6 +247,9 @@ spec:
                   key: "{{ . }}"
             {{- end }}
 
+            {{- with .aws }}
+            - name: PLT_AWS_SA_ROLE_ARN
+              value: {{ .role_arn }}
             {{- with .elasticache }}
             - name: PLT_APPLICATIONS_CACHE_PROVIDER
               value: elasticache
@@ -245,6 +259,7 @@ spec:
               value: {{ .region }}
             - name: PLT_APPLICATIONS_ELASTICACHE_CLUSTERID_PREFIX
               value: {{ .cluster_name }}
+            {{- end}}
             {{- end}}
 
           {{- if .command }}
