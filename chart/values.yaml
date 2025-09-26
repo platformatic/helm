@@ -102,6 +102,10 @@ services:
       PLT_SCALER_COOLDOWN: 300
       PLT_SCALER_PERIODIC_TRIGGER: 60
       PLT_METRICS_TIME_RANGE: 60
+      PLT_SCALER_POD_MIN_LABEL: icc.platformatic.dev/scaler-min
+      PLT_SCALER_POD_MIN_DEFAULT_VALUE: 1
+      PLT_SCALER_POD_MAX_LABEL: icc.platformatic.dev/scaler-max
+      PLT_SCALER_POD_MAX_DEFAULT_VALUE: 3
 
       # Compliance
       PLT_COMPLIANCE_RULES_DIR: "./rules"
