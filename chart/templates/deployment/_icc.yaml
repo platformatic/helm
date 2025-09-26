@@ -149,11 +149,11 @@ spec:
             - name: PLT_SCALER_POD_MIN_LABEL
               value: {{ $.Values.watt.scaling.labels.minimum_pods.name }}
             - name: PLT_SCALER_POD_MIN_DEFAULT_VALUE
-              value: {{ $.Values.watt.scaling.labels.minimum_pods.value }}
+              value: {{ $.Values.watt.scaling.labels.minimum_pods.default_value }}
             - name: PLT_SCALER_POD_MAX_LABEL
               value: {{ $.Values.watt.scaling.labels.maximum_pods.name }}
             - name: PLT_SCALER_POD_MAX_DEFAULT_VALUE
-              value: {{ $.Values.watt.scaling.labels.maximum_pods.value }}
+              value: {{ $.Values.watt.scaling.labels.maximum_pods.default_value }}
 
             # Compliance
             - name: PLT_COMPLIANCE_RULES_DIR
