@@ -54,7 +54,7 @@ production-ready set of values except for the `secrets` portion.
 | `watt.scaling.labels.minimum_pods.name` | The label key for minimum pod scaling | icc.platformatic.dev/scaler-min |
 | `watt.scaling.labels.minimum_pods.default_value` | Minimum number of pods to scale down to if the label is not set | 1 |
 | `watt.scaling.labels.maximum_pods.name` | The label key for maximum pod scaling | icc.platformatic.dev/scaler-max |
-| `watt.scaling.labels.maximum_pods.default_value` | Maximum number of pods to scale up to if the label is not set | 3 |
+| `watt.scaling.labels.maximum_pods.default_value` | Maximum number of pods to scale up to if the label is not set | 10 |
 
 ### Intelligent Command Center
 
