@@ -37,7 +37,7 @@ watt:
         default_value: "1"
       maximum_pods:
         name: icc.platformatic.dev/scaler-max
-        default_value: "3"
+        default_value: "10"
 
 # Platformatic service configuration
 # Installation documentation is available at:
