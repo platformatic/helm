@@ -35,6 +35,21 @@ spec:
       imagePullSecrets:
         - name: {{ $.Values.imagePullSecret.name | default "image-pull-secret" }}
       {{- end }}
+
+      {{- with .volumes }}
+      volumes:
+      {{- range $volume, $value := . }}
+        - name: {{ .name }}
+          {{- if .hostPath }}
+          hostPath:
+            path: {{ .hostPath.path }}
+            type: {{ .hostPath.type | default "Directory" }}
+          {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}-pvc
+          {{- end }}
+      {{- end }}
+      {{- end }}
       serviceAccountName: {{ .serviceAccountName | default (include "application.serviceAccountName" $) }}
       {{- with .podSecurityContext }}
       securityContext:
@@ -67,6 +82,10 @@ spec:
             - name: PLT_K8S_INSTALLED_NAMESPACE
               value: {{ include "install.namespace" $ }}
 
+            {{- with .env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
           {{- if .command }}
           command:
             {{- toYaml .command | nindent 12 }}
@@ -76,6 +95,10 @@ spec:
           workingDir: {{ .workingDir }}
           {{- end }}
 
+          {{- with .volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               protocol: TCP

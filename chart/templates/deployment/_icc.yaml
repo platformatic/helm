@@ -36,8 +36,14 @@ spec:
       volumes:
       {{- range $volume, $value := . }}
         - name: {{ .name }}
+          {{- if .hostPath }}
+          hostPath:
+            path: {{ .hostPath.path }}
+            type: {{ .hostPath.type | default "Directory" }}
+          {{- else }}
           persistentVolumeClaim:
             claimName: {{ .name }}-pvc
+          {{- end }}
       {{- end }}
       {{- end }}
       serviceAccountName: {{ .serviceAccountName | default (include "application.serviceAccountName" $) }}
@@ -247,6 +253,10 @@ spec:
               value: {{ .cluster_name }}
             {{- end}}
 
+            {{- with .env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
           {{- if .command }}
           command:
             {{- toYaml .command | nindent 12 }}
@@ -256,6 +266,10 @@ spec:
           workingDir: {{ .workingDir }}
           {{- end }}
 
+          {{- with .volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               protocol: TCP
