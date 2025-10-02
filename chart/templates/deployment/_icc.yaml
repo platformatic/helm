@@ -94,23 +94,23 @@ spec:
             - name: PLT_MACHINIST_URL
               value: http://machinist.platformatic
             - name: PLT_FEATURE_CACHE
-              value: "{{ .features.cache.enable | default false }}"
+              value: "{{ .features.cache.enable | default false | toString }}"
             - name: PLT_FEATURE_CACHE_RECOMMENDATIONS
-              value: "{{ .features.cache_recommendations.enable | default false }}"
+              value: "{{ .features.cache_recommendations.enable | default false | toString }}"
             - name: PLT_FEATURE_RISK_SERVICE_DUMP
-              value: "{{ .features.risk_service_dump.enable | default false }}"
+              value: "{{ .features.risk_service_dump.enable | default false | toString }}"
             - name: PLT_FEATURE_FFC
-              value: "{{ .features.ffc.enable | default false }}"
+              value: "{{ .features.ffc.enable | default false | toString }}"
             - name: PLT_FEATURE_SCALER_TRENDS_LEARNING
-              value: "{{ .features.scaler_trends_learning.enable | default false }}"
+              value: "{{ .features.scaler_trends_learning.enable | default false | toString }}"
             - name: DEV_K8S
-              value: '{{- dig "features" "dev_mode" "enable" false . }}'
+              value: '{{ dig "features" "dev_mode" "enable" false . | toString }}'
 
             # Main service
             - name: DEMO_LOGIN
-              value: '{{- dig "features" "dev_mode" "enable" false . }}'
+              value: '{{ dig "features" "dev_mode" "enable" false . | toString }}'
             - name: DEV
-              value: '{{- dig "features" "dev_mode" "enable" false . }}'
+              value: '{{ dig "features" "dev_mode" "enable" false . | toString }}'
             - name: VITE_API_BASE_URL
               value: "{{ .public_url }}"
             - name: VITE_SERVER_URL
