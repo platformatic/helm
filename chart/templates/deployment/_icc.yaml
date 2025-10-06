@@ -36,8 +36,14 @@ spec:
       volumes:
       {{- range $volume, $value := . }}
         - name: {{ .name }}
+          {{- if .hostPath }}
+          hostPath:
+            path: {{ .hostPath.path }}
+            type: {{ .hostPath.type | default "Directory" }}
+          {{- else }}
           persistentVolumeClaim:
             claimName: {{ .name }}-pvc
+          {{- end }}
       {{- end }}
       {{- end }}
       serviceAccountName: {{ .serviceAccountName | default (include "application.serviceAccountName" $) }}
@@ -88,23 +94,23 @@ spec:
             - name: PLT_MACHINIST_URL
               value: http://machinist.platformatic
             - name: PLT_FEATURE_CACHE
-              value: "{{ .features.cache.enable | default false }}"
+              value: "{{ .features.cache.enable | default false | toString }}"
             - name: PLT_FEATURE_CACHE_RECOMMENDATIONS
-              value: "{{ .features.cache_recommendations.enable | default false }}"
+              value: "{{ .features.cache_recommendations.enable | default false | toString }}"
             - name: PLT_FEATURE_RISK_SERVICE_DUMP
-              value: "{{ .features.risk_service_dump.enable | default false }}"
+              value: "{{ .features.risk_service_dump.enable | default false | toString }}"
             - name: PLT_FEATURE_FFC
-              value: "{{ .features.ffc.enable | default false }}"
+              value: "{{ .features.ffc.enable | default false | toString }}"
             - name: PLT_FEATURE_SCALER_TRENDS_LEARNING
-              value: "{{ .features.scaler_trends_learning.enable | default false }}"
+              value: "{{ .features.scaler_trends_learning.enable | default false | toString }}"
             - name: DEV_K8S
-              value: '{{- dig "features" "dev_mode" "enable" false . }}'
+              value: '{{ dig "features" "dev_mode" "enable" false . | toString }}'
 
             # Main service
             - name: DEMO_LOGIN
-              value: '{{- dig "features" "dev_mode" "enable" false . }}'
+              value: '{{ dig "features" "dev_mode" "enable" false . | toString }}'
             - name: DEV
-              value: '{{- dig "features" "dev_mode" "enable" false . }}'
+              value: '{{ dig "features" "dev_mode" "enable" false . | toString }}'
             - name: VITE_API_BASE_URL
               value: "{{ .public_url }}"
             - name: VITE_SERVER_URL
@@ -145,7 +151,15 @@ spec:
             - name: PLT_METRICS_TIME_RANGE
               value: "60"
             - name: PLT_METRICS_PROMETHEUS_URL
-              value: {{ .prometheus.url }}
+              value: "{{ .prometheus.url }}"
+            - name: PLT_SCALER_POD_MIN_LABEL
+              value: "{{ $.Values.watt.scaling.labels.minimum_pods.name }}"
+            - name: PLT_SCALER_POD_MIN_DEFAULT_VALUE
+              value: "{{ $.Values.watt.scaling.labels.minimum_pods.default_value }}"
+            - name: PLT_SCALER_POD_MAX_LABEL
+              value: "{{ $.Values.watt.scaling.labels.maximum_pods.name }}"
+            - name: PLT_SCALER_POD_MAX_DEFAULT_VALUE
+              value: "{{ $.Values.watt.scaling.labels.maximum_pods.default_value }}"
 
             {{- with .aws }}
             {{- with .amp }}
@@ -254,6 +268,10 @@ spec:
             {{- end}}
             {{- end}}
 
+            {{- with .env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
           {{- if .command }}
           command:
             {{- toYaml .command | nindent 12 }}
@@ -263,6 +281,10 @@ spec:
           workingDir: {{ .workingDir }}
           {{- end }}
 
+          {{- with .volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               protocol: TCP
