@@ -76,7 +76,6 @@ production-ready set of values except for the `secrets` portion.
 | `services.icc.secrets.icc_session` | Random value to secure sessions | "" | Yes |
 | `services.icc.secrets.control_plane_keys` | Random value to secure sessions | "" | Yes |
 | `services.icc.secrets.user_manager_session` | Random value to secure sessions | "" | Yes |
-| `services.icc.scaler.algorithm_version` | The version of the algorithm to use | v1 | No |
 
 #### Elasticache
 
