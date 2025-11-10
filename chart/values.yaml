@@ -56,12 +56,16 @@ services:
     monitor:
       enable: true
 
-    # Configure elasticache
-    # See <doc link here>
-    #elasticache:
+    # Configure AWS features
+    #aws:
+    #  # The role must have policies for all enabled AWS features
     #  role_arn: ""
-    #  region: ""
-    #  cluster_name: ""
+    #  elasticache:
+    #    region: ""
+    #    cluster_name: ""
+    #  amp:
+    #    region: ""
+    #    workspace_id: ""
 
     # We have a changelog available at: 
     image:
