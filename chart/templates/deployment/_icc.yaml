@@ -145,9 +145,9 @@ spec:
 
             # Scaler
             - name: PLT_SCALER_COOLDOWN
-              value: "300"
+              value: "{{ dig "scaler" "cooldown" 10 . | toString }}"
             - name: PLT_SCALER_PERIODIC_TRIGGER
-              value: "60"
+              value: "{{ dig "scaler" "periodic_trigger" 60 . | toString }}"
             - name: PLT_METRICS_TIME_RANGE
               value: "60"
             - name: PLT_METRICS_PROMETHEUS_URL

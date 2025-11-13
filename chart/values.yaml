@@ -127,6 +127,16 @@ services:
     #prometheus:
     #  url: ""
 
+    # Scaler configuration for autoscaling watt applications
+    # These settings control how the ICC scaler behaves
+    #scaler:
+    #  # Algorithm version to use for scaling decisions (v1, v2)
+    #  algorithm_version: "v1"
+    #  # Cooldown period in seconds between scaling operations
+    #  cooldown: 10
+    #  # How often to check metrics and trigger scaling decisions (in seconds)
+    #  periodic_trigger: 60
+
     # Additional pod annotations
     #podAnnotations: {}
 
