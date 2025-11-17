@@ -145,7 +145,7 @@ spec:
 
             # Scaler
             - name: PLT_SCALER_COOLDOWN
-              value: "{{ dig "scaler" "cooldown" 10 . | toString }}"
+              value: "{{ dig "scaler" "cooldown" 15 . | toString }}"
             - name: PLT_SCALER_PERIODIC_TRIGGER
               value: "{{ dig "scaler" "periodic_trigger" 60 . | toString }}"
             - name: PLT_METRICS_TIME_RANGE
