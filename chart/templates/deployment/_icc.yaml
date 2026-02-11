@@ -295,12 +295,16 @@ spec:
             successThreshold: 1
             timeoutSeconds: 1
           resources:
+            {{- if .resources }}
+            {{- toYaml .resources | nindent 12 }}
+            {{- else }}
             limits:
               cpu: 2
               memory: 2048Mi
             requests:
               cpu: 1
               memory: 1024Mi
+            {{- end }}
 
       {{- with .nodeSelector }}
       nodeSelector:
