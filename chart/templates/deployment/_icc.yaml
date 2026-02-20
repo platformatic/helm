@@ -103,6 +103,8 @@ spec:
               value: "{{ .features.ffc.enable | default false | toString }}"
             - name: PLT_FEATURE_SCALER_TRENDS_LEARNING
               value: "{{ .features.scaler_trends_learning.enable | default false | toString }}"
+            - name: PLT_FEATURE_SKEW_PROTECTION
+              value: "{{ .features.skew_protection.enable | default false | toString }}"
             - name: DEV_K8S
               value: '{{ dig "features" "dev_mode" "enable" false . | toString }}'
 
