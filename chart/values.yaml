@@ -81,6 +81,8 @@ services:
         enable: false
       scaler_trends_learning:
         enable: false
+      skew_protection:
+        enable: false
 
     # Available levels: debug, info, warn, error
     log_level: warn

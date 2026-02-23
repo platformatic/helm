@@ -29,6 +29,26 @@ charts due to the vast number of ways the software could be installed.
 | podmonitors.monitoring.coreos.com | PodMonitor | We apply a PodMonitor into any namespace that wattpro applications are running in. | [From ArtifactHub](https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds) |
 | servicemonitors.monitoring.coreos.com | ServiceMonitor | We use service monitor to track the metrics of Intelligent Command Center and Machinist. | [From ArtifactHub](https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds) |
 
+### Gateway API (Skew Protection)
+
+Skew protection uses the Kubernetes Gateway API to route requests to specific
+application versions. This is **opt-in** — when disabled, ICC behaves exactly
+as today with no Gateway API interaction.
+
+When skew protection is enabled:
+
+- **Gateway API CRDs** must be installed in the cluster (provided by the Gateway
+  controller, e.g. Envoy Gateway)
+- The chart grants Machinist RBAC for `gateway.networking.k8s.io` resources
+  (`httproutes` and `gateways`). These rules are safe even without the CRDs
+  installed — Kubernetes silently ignores RBAC rules for unknown API groups
+- The Gateway API controller must support **Extended conformance**, specifically
+  `RegularExpression` header matching on the `Cookie` header for session-to-version
+  affinity
+
+See the [design document](../design.md) Appendix A for a list of compatible
+Gateway API controllers.
+
 ## Architecture
 
 The default values for this chart are in _chart/values.yaml_. This is a
