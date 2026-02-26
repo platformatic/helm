@@ -83,6 +83,11 @@ services:
         enable: false
       skew_protection:
         enable: false
+        auto_cleanup: false        # Delete expired Deployment and Service resources
+        grace_period_ms: 86400000  # Grace period before expiring draining versions (24h)
+        check_interval_ms: 60000   # How often to check draining versions (1 min)
+        traffic_window_ms: 1800000 # Time window for traffic activity tracking (30 min)
+        cookie_max_age: 43200      # Max age for session cookie in seconds (12h)
 
     # Available levels: debug, info, warn, error
     log_level: warn
