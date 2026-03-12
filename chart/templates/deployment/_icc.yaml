@@ -93,6 +93,10 @@ spec:
               value: http://compliance.plt.local
             - name: PLT_MACHINIST_URL
               value: http://machinist.platformatic
+            {{- if and $.Values.services.workflow $.Values.services.workflow.deploy }}
+            - name: PLT_WORKFLOW_URL
+              value: http://workflow.{{ include "install.namespace" $ }}
+            {{- end }}
             - name: PLT_FEATURE_CACHE
               value: "{{ .features.cache.enable | default false | toString }}"
             - name: PLT_FEATURE_CACHE_RECOMMENDATIONS

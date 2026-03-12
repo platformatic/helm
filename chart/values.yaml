@@ -219,3 +219,49 @@ services:
 
     # Nodes to join
     #affinity: {}
+
+  # Workflow Service — durable workflow execution engine
+  workflow:
+    # Used in URLs and referencing deployments, pods, and secrets
+    name: workflow
+
+    # Set to true to deploy the Workflow Service
+    deploy: false
+
+    # Monitor via Prometheus
+    monitor:
+      enable: true
+
+    # We have a changelog available at:
+    image:
+      repository: platformatic/workflow
+      pullPolicy: IfNotPresent
+      tag: "latest"
+
+    # Available levels: debug, info, warn, error
+    log_level: warn
+
+    # Additional pod annotations
+    #podAnnotations: {}
+
+    # Additional pod security
+    #podSecurityContext: {}
+
+    # Resource limits and requests
+    # Defaults: limits: cpu=1, memory=1024Mi; requests: cpu=0.5, memory=512Mi
+    #resources:
+    #  limits:
+    #    cpu: 1
+    #    memory: 1Gi
+    #  requests:
+    #    cpu: 0.5
+    #    memory: 512Mi
+
+    # Selector labels for the node to provision workflow to
+    #nodeSelector: {}
+
+    # Nodes to avoid
+    #tolerations: []
+
+    # Nodes to join
+    #affinity: {}
