@@ -9,3 +9,9 @@
 {{- if $.Values.services.machinist.monitor.enable -}}
 {{- include "prometheus.servicemonitor" (list $ .Values.services.machinist) }}
 {{- end }}
+
+{{- if and $.Values.services.workflow $.Values.services.workflow.deploy }}
+{{- if $.Values.services.workflow.monitor.enable -}}
+{{- include "prometheus.servicemonitor" (list $ .Values.services.workflow) }}
+{{- end }}
+{{- end }}

@@ -7,3 +7,8 @@
 ---
 {{- include "deployment.machinist" (list $ .Values.services.machinist) }}
 {{- end }}
+
+{{- if and .Values.services.workflow .Values.services.workflow.deploy }}
+---
+{{- include "deployment.workflow" (list $ .Values.services.workflow) }}
+{{- end }}

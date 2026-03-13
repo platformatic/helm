@@ -1,0 +1,150 @@
+{{- define "deployment.workflow" }}
+{{- $ := index . 0 }}
+
+{{- with index . 1 }}
+{{ $target_port := 3042 }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}
+  namespace: {{ include "install.namespace" $ }}
+  labels:
+    {{- include "application.labels" $ | nindent 4 }}
+    {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 6 }}
+  template:
+
+    metadata:
+      {{- with .podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      labels:
+        {{- with .podLabels }}
+        {{- toYaml .| nindent 8 }}
+        {{- end }}
+        {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 8 }}
+
+    spec:
+      {{- with $.Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ $.Values.imagePullSecret.name | default "image-pull-secret" }}
+      {{- end }}
+
+      {{- with .volumes }}
+      volumes:
+      {{- range $volume, $value := . }}
+        - name: {{ .name }}
+          {{- if .hostPath }}
+          hostPath:
+            path: {{ .hostPath.path }}
+            type: {{ .hostPath.type | default "Directory" }}
+          {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}-pvc
+          {{- end }}
+      {{- end }}
+      {{- end }}
+      serviceAccountName: {{ .serviceAccountName | default (include "application.serviceAccountName" $) }}
+      {{- with .podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .name }}
+          {{- with .securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .image.repository }}:{{ .image.tag | default "latest" }}"
+          imagePullPolicy: {{ .image.pullPolicy | default "IfNotPresent" }}
+
+          env:
+            - name: HOST
+              value: "0.0.0.0"
+            - name: PORT
+              value: "{{ $target_port }}"
+            - name: PLT_LOGGER_LEVEL
+              value: "{{ .log_level }}"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: icc-databases
+                  key: "workflow"
+            - name: K8S_ADMIN_SERVICE_ACCOUNT
+              value: "{{ include "install.namespace" $ }}:{{ include "application.serviceAccountName" $ }}"
+
+            {{- with .env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+          {{- if .command }}
+          command:
+            {{- toYaml .command | nindent 12 }}
+          {{- end }}
+
+          {{- if .workingDir }}
+          workingDir: {{ .workingDir }}
+          {{- end }}
+
+          {{- with .volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: {{ $target_port }}
+
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: http
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: http
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+
+          resources:
+            {{- if .resources }}
+            {{- toYaml .resources | nindent 12 }}
+            {{- else }}
+            limits:
+              cpu: 1
+              memory: 1024Mi
+            requests:
+              cpu: 0.5
+              memory: 512Mi
+            {{- end }}
+
+      {{- with .nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+{{- end }}
