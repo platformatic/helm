@@ -111,8 +111,20 @@ spec:
               value: "{{ .features.skew_protection.enable | default false | toString }}"
             - name: PLT_SKEW_AUTO_CLEANUP
               value: "{{ dig "features" "skew_protection" "auto_cleanup" false . | toString }}"
-            {{- with dig "features" "skew_protection" "grace_period_ms" nil . }}
-            - name: PLT_SKEW_GRACE_PERIOD_MS
+            {{- with dig "features" "skew_protection" "http_grace_period_ms" nil . }}
+            - name: PLT_SKEW_HTTP_GRACE_PERIOD_MS
+              value: "{{ . }}"
+            {{- end }}
+            {{- with dig "features" "skew_protection" "http_max_alive_ms" nil . }}
+            - name: PLT_SKEW_HTTP_MAX_ALIVE_MS
+              value: "{{ . }}"
+            {{- end }}
+            {{- with dig "features" "skew_protection" "workflow_grace_period_ms" nil . }}
+            - name: PLT_SKEW_WORKFLOW_GRACE_PERIOD_MS
+              value: "{{ . }}"
+            {{- end }}
+            {{- with dig "features" "skew_protection" "workflow_max_alive_ms" nil . }}
+            - name: PLT_SKEW_WORKFLOW_MAX_ALIVE_MS
               value: "{{ . }}"
             {{- end }}
             {{- with dig "features" "skew_protection" "check_interval_ms" nil . }}
