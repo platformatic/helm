@@ -237,6 +237,10 @@ services:
       pullPolicy: IfNotPresent
       tag: "latest"
 
+    # Prometheus ServiceMonitor
+    monitor:
+      enable: true
+
     # Available levels: debug, info, warn, error
     log_level: info
 
