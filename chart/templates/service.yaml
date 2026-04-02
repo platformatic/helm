@@ -28,3 +28,24 @@ spec:
     {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
 {{- end }}
 {{- end }}
+
+{{- if and .Values.services.ebpfSandbox .Values.services.ebpfSandbox.deploy }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.ebpfSandbox.name }}-metrics
+  namespace: {{ include "install.namespace" $ }}
+  labels:
+    {{- include "application.labels" $ | nindent 4 }}
+    {{- include "application.selectorLabels" (merge (dict "name" .Values.services.ebpfSandbox.name) $) | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.services.ebpfSandbox.metricsPort }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    {{- include "application.selectorLabels" (merge (dict "name" .Values.services.ebpfSandbox.name) $) | nindent 4 }}
+{{- end }}
