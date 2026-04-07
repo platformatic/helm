@@ -256,6 +256,10 @@ services:
     # Base cgroup path for Platformatic workloads
     cgroupBase: /sys/fs/cgroup/platformatic
 
+    # Disable eBPF policy enforcement (uses NoopEbpfManager)
+    # Set to true for environments without BPF LSM (e.g. macOS dev)
+    disableEBPFPolicies: false
+
     # Resource limits and requests
     #resources:
     #  limits:

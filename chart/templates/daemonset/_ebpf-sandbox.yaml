@@ -101,6 +101,10 @@ spec:
           env:
             - name: NODE_ENV
               value: "production"
+            {{- if .disableEBPFPolicies }}
+            - name: PLT_SANDBOX_DISABLE_ENFORCEMENT
+              value: "true"
+            {{- end }}
             {{- with .env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
