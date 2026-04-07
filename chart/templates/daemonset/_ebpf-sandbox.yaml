@@ -1,0 +1,169 @@
+{{- define "daemonset.ebpf-sandbox" }}
+{{- $ := index . 0 }}
+
+{{- with index . 1 }}
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .name }}
+  namespace: {{ include "install.namespace" $ }}
+  labels:
+    {{- include "application.labels" $ | nindent 4 }}
+    {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 6 }}
+  template:
+
+    metadata:
+      {{- with .podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      labels:
+        {{- with .podLabels }}
+        {{- toYaml .| nindent 8 }}
+        {{- end }}
+        {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 8 }}
+
+    spec:
+      {{- with $.Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ $.Values.imagePullSecret.name | default "image-pull-secret" }}
+      {{- end }}
+
+      hostPID: true
+
+      volumes:
+        - name: cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+            type: Directory
+        - name: bpffs
+          hostPath:
+            path: /sys/fs/bpf
+            type: DirectoryOrCreate
+        - name: sandbox-sock
+          hostPath:
+            path: /var/run/platformatic-sandbox
+            type: DirectoryOrCreate
+        - name: debugfs
+          hostPath:
+            path: /sys/kernel/debug
+            type: Directory
+        - name: tracefs
+          hostPath:
+            path: /sys/kernel/tracing
+            type: DirectoryOrCreate
+        {{- with .volumes }}
+        {{- range $volume, $value := . }}
+        - name: {{ .name }}
+          {{- if .hostPath }}
+          hostPath:
+            path: {{ .hostPath.path }}
+            type: {{ .hostPath.type | default "Directory" }}
+          {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}-pvc
+          {{- end }}
+        {{- end }}
+        {{- end }}
+
+      serviceAccountName: {{ .name }}
+      {{- with .podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .name }}
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - BPF
+                - NET_ADMIN
+                - SYS_RESOURCE
+          image: "{{ .image.repository }}:{{ .image.tag | default "latest" }}"
+          imagePullPolicy: {{ .image.pullPolicy | default "IfNotPresent" }}
+
+          args:
+            - node
+            - {{ .entrypoint | default "src/index.ts" }}
+            - --socket={{ .socketPath }}
+            - --metrics-port={{ .metricsPort | default 8443 }}
+            - --bpf-dir={{ .bpfDir | default "/app/bpf" }}
+            - --cgroup-base={{ .cgroupBase | default "/sys/fs/cgroup/platformatic" }}
+
+          env:
+            - name: NODE_ENV
+              value: "production"
+            {{- if .disableEBPFPolicies }}
+            - name: PLT_SANDBOX_DISABLE_ENFORCEMENT
+              value: "true"
+            {{- end }}
+            {{- with .env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+          volumeMounts:
+            - name: cgroup
+              mountPath: /sys/fs/cgroup
+            - name: bpffs
+              mountPath: /sys/fs/bpf
+            - name: sandbox-sock
+              mountPath: /var/run/platformatic-sandbox
+            - name: debugfs
+              mountPath: /sys/kernel/debug
+            - name: tracefs
+              mountPath: /sys/kernel/tracing
+            {{- with .volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+          ports:
+            - name: metrics
+              protocol: TCP
+              containerPort: {{ .metricsPort }}
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+
+          resources:
+            {{- if .resources }}
+            {{- toYaml .resources | nindent 12 }}
+            {{- else }}
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            {{- end }}
+
+      {{- with .nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+{{- end }}

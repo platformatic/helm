@@ -15,3 +15,9 @@
 {{- include "prometheus.servicemonitor" (list $ .Values.services.workflow) }}
 {{- end }}
 {{- end }}
+
+{{- if and $.Values.services.ebpfSandbox $.Values.services.ebpfSandbox.deploy $.Values.services.ebpfSandbox.monitor }}
+{{- if $.Values.services.ebpfSandbox.monitor.enable -}}
+{{- include "prometheus.servicemonitor" (list $ .Values.services.ebpfSandbox) }}
+{{- end }}
+{{- end }}

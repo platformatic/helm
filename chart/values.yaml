@@ -223,6 +223,70 @@ services:
     # Nodes to join
     #affinity: {}
 
+  # eBPF Sandbox Server — per-node eBPF-based sandbox enforcement
+  ebpfSandbox:
+    # Used in URLs and referencing daemonsets, pods, and secrets
+    name: ebpf-sandbox
+
+    # Set to true to deploy the eBPF Sandbox Server
+    deploy: false
+
+    # We have a changelog available at:
+    image:
+      repository: platformatic/ebpf-sandbox-server
+      pullPolicy: IfNotPresent
+      tag: "latest"
+
+    # Prometheus ServiceMonitor
+    monitor:
+      enable: true
+
+    # Available levels: debug, info, warn, error
+    log_level: info
+
+    # Unix socket path for sandbox communication
+    socketPath: /var/run/platformatic-sandbox/sandbox.sock
+
+    # Metrics endpoint port
+    metricsPort: 8443
+
+    # Directory containing compiled BPF programs
+    bpfDir: /app/bpf
+
+    # Base cgroup path for Platformatic workloads
+    cgroupBase: /sys/fs/cgroup/platformatic
+
+    # Disable eBPF policy enforcement (uses NoopEbpfManager)
+    # Set to true for environments without BPF LSM (e.g. macOS dev)
+    disableEBPFPolicies: false
+
+    # Resource limits and requests
+    #resources:
+    #  limits:
+    #    cpu: 500m
+    #    memory: 512Mi
+    #  requests:
+    #    cpu: 100m
+    #    memory: 128Mi
+
+    # Additional volumes
+    #volumes: []
+
+    # Additional volume mounts
+    #volumeMounts: []
+
+    # Additional pod annotations
+    #podAnnotations: {}
+
+    # Selector labels for the nodes to provision ebpf-sandbox to
+    #nodeSelector: {}
+
+    # Nodes to avoid
+    #tolerations: []
+
+    # Nodes to join
+    #affinity: {}
+
   # Workflow Service — durable workflow execution engine
   workflow:
     # Used in URLs and referencing deployments, pods, and secrets

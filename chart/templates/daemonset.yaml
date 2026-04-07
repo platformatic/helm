@@ -1,0 +1,4 @@
+{{- if and .Values.services.ebpfSandbox .Values.services.ebpfSandbox.deploy }}
+---
+{{- include "daemonset.ebpf-sandbox" (list $ .Values.services.ebpfSandbox) }}
+{{- end }}
