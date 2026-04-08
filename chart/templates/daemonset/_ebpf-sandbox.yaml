@@ -90,7 +90,7 @@ spec:
           image: "{{ .image.repository }}:{{ .image.tag | default "latest" }}"
           imagePullPolicy: {{ .image.pullPolicy | default "IfNotPresent" }}
 
-          args:
+          command:
             - node
             - {{ .entrypoint | default "src/index.ts" }}
             - --socket={{ .socketPath }}
