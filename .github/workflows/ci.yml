@@ -33,17 +33,17 @@ jobs:
         run: helm lint ${{ env.HELM_DIRECTORY }} ${{ env.REQUIRED_VALUES }}
 
       - name: 'Helm template (defaults)'
-        run: helm template ${{ env.HELM_DIRECTORY }} ${{ env.REQUIRED_VALUES }} > /dev/null
+        run: helm template ${{ env.HELM_DIRECTORY }} ${{ env.REQUIRED_VALUES }} --kube-version 1.30.0 > /dev/null
 
       - name: 'Helm template (all optional services enabled)'
         run: |
-          helm template ${{ env.HELM_DIRECTORY }} ${{ env.REQUIRED_VALUES }} \
+          helm template ${{ env.HELM_DIRECTORY }} ${{ env.REQUIRED_VALUES }} --kube-version 1.30.0 \
             --set services.workflow.deploy=true \
             --set services.ebpfSandbox.deploy=true > /dev/null
 
       - name: 'Required values are enforced'
         run: |
-          if helm template ${{ env.HELM_DIRECTORY }} > /dev/null 2>&1; then
+          if helm template ${{ env.HELM_DIRECTORY }} --kube-version 1.30.0 > /dev/null 2>&1; then
             echo "::error::Chart rendered without required values; the 'required' guards are not working"
             exit 1
           fi
