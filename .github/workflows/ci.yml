@@ -1,0 +1,70 @@
+name: 'CI'
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+env:
+  HELM_DIRECTORY: './chart'
+  # Values that are marked Required in the chart. Without them the chart fails
+  # fast with a clear `required` error, so CI must provide dummies.
+  REQUIRED_VALUES: >-
+    --set services.icc.database_url=postgres://user:pass@db:5432/icc
+    --set services.icc.valkey.apps_url=redis://valkey:6379/0
+    --set services.icc.valkey.icc_url=redis://valkey:6379/1
+    --set services.icc.prometheus.url=http://prometheus:9090
+
+jobs:
+  lint-and-template:
+    name: 'Lint and template'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: 'Install Helm'
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.13.2'
+
+      - name: 'Helm lint'
+        run: helm lint ${{ env.HELM_DIRECTORY }} ${{ env.REQUIRED_VALUES }}
+
+      - name: 'Helm template (defaults)'
+        run: helm template ${{ env.HELM_DIRECTORY }} ${{ env.REQUIRED_VALUES }} > /dev/null
+
+      - name: 'Helm template (all optional services enabled)'
+        run: |
+          helm template ${{ env.HELM_DIRECTORY }} ${{ env.REQUIRED_VALUES }} \
+            --set services.workflow.deploy=true \
+            --set services.ebpfSandbox.deploy=true > /dev/null
+
+      - name: 'Required values are enforced'
+        run: |
+          if helm template ${{ env.HELM_DIRECTORY }} > /dev/null 2>&1; then
+            echo "::error::Chart rendered without required values; the 'required' guards are not working"
+            exit 1
+          fi
+          echo "OK: chart fails fast when required values are missing"
+
+      - name: 'Install kubeconform'
+        run: |
+          curl -sSL -o /tmp/kubeconform.tar.gz \
+            https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
+          tar -xzf /tmp/kubeconform.tar.gz -C /tmp
+          sudo install /tmp/kubeconform /usr/local/bin/kubeconform
+
+      - name: 'Validate manifests against Kubernetes schemas'
+        run: |
+          helm template ${{ env.HELM_DIRECTORY }} ${{ env.REQUIRED_VALUES }} \
+            --set services.workflow.deploy=true \
+            --set services.ebpfSandbox.deploy=true \
+            --kube-version 1.30.0 \
+          | kubeconform \
+              -strict \
+              -summary \
+              -kubernetes-version 1.30.0 \
+              -ignore-missing-schemas \
+              -schema-location default
