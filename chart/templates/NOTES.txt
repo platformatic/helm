@@ -1,4 +1,4 @@
-Thanks for installing Platformatic. Checkout our documentation to integerate your
+Thanks for installing Platformatic. Check out our documentation to integrate your
 applications into the Intelligent Command Center.
 
-Visit https://platformatic.dev/docs/Overview
+Visit https://icc.platformatic.dev/

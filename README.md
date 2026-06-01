@@ -14,6 +14,8 @@ Navigate:
     * [Watt](#watt)
     * [Intelligent Command Center](#intelligent-command-center)
     * [Machinist](#machinist)
+    * [Workflow](#workflow)
+    * [eBPF Sandbox](#ebpf-sandbox)
 * [Installation](#installation)
 * [Notes](#notes)
 
@@ -46,8 +48,8 @@ When skew protection is enabled:
   `RegularExpression` header matching on the `Cookie` header for session-to-version
   affinity
 
-See the [design document](../design.md) Appendix A for a list of compatible
-Gateway API controllers.
+See the [Skew Protection Prerequisites](https://icc.platformatic.dev/skew-protection/prerequisites/)
+documentation for a list of compatible Gateway API controllers.
 
 ## Architecture
 
@@ -96,7 +98,6 @@ production-ready set of values except for the `secrets` portion.
 | `services.icc.secrets.icc_session` | Random value to secure sessions | "" | Yes |
 | `services.icc.secrets.control_plane_keys` | Random value to secure sessions | "" | Yes |
 | `services.icc.secrets.user_manager_session` | Random value to secure sessions | "" | Yes |
-| `services.icc.scaler.algorithm_version` | The version of the algorithm to use | v1 | No |
 
 #### Elasticache
 
@@ -115,6 +116,23 @@ production-ready set of values except for the `secrets` portion.
 | `services.icc.features.risk_service_dump.enable` | Enable long-term storage for the risk service | false | No |
 | `services.icc.features.ffc.enable` | Fussion, Fission & Cascade | false | No |
 | `services.icc.features.scaler_trends_learning.enable` | Enable scaler trend learning | false | No |
+| `services.icc.features.skew_protection.enable` | Enable version skew protection via Gateway API (opt-in, see [Requirements](#gateway-api-skew-protection)) | false | No |
+| `services.icc.features.skew_protection.auto_cleanup` | Delete expired Deployment and Service resources | false | No |
+| `services.icc.features.skew_protection.http_grace_period_ms` | Min time to keep an HTTP version draining | 1800000 | No |
+| `services.icc.features.skew_protection.http_max_alive_ms` | Hard deadline for HTTP versions | 86400000 | No |
+| `services.icc.features.skew_protection.workflow_grace_period_ms` | Min time to keep a workflow version draining | 3600000 | No |
+| `services.icc.features.skew_protection.workflow_max_alive_ms` | Hard deadline for workflow versions | 259200000 | No |
+| `services.icc.features.skew_protection.check_interval_ms` | How often to check draining versions | 60000 | No |
+| `services.icc.features.skew_protection.traffic_window_ms` | Time window for traffic activity tracking | 1800000 | No |
+| `services.icc.features.skew_protection.cookie_max_age` | Max age for the session cookie (seconds) | 43200 | No |
+
+#### Scaler
+
+| Name | Description | Default Value | Required |
+| --- | --- | --- | --- |
+| `services.icc.scaler.algorithm_version` | The version of the scaling algorithm to use (v1, v2) | v1 | No |
+| `services.icc.scaler.cooldown` | Cooldown period in seconds between scaling operations | 15 | No |
+| `services.icc.scaler.periodic_trigger` | How often to check metrics and trigger scaling decisions (seconds) | 60 | No |
 
 #### Login methods
 
@@ -135,18 +153,64 @@ Configure how the Intelligent Command Center can be accessed
 
 | Name | Description | Default Value | Required |
 | --- | --- | --- | --- |
-| `services.machinist.name` | Name of all related resources | icc | No |
-| `services.machinist.deploy` | Deploy Intelligent Command Center | true | No |
-| `services.machinist.monitor.enable` | Monitor ICC so that it can autoscale | true | No |
-| `services.machinist.image.repository` | Location of the Intelligent Command Center image | platformatic/intelligent-command-center | No |
+| `services.machinist.name` | Name of all related resources | machinist | No |
+| `services.machinist.deploy` | Deploy Machinist | true | No |
+| `services.machinist.monitor.enable` | Monitor Machinist so that it can autoscale | true | No |
+| `services.machinist.serviceAccountName` | ServiceAccount used to manage Pods and scaling | plt-pod-manager | No |
+| `services.machinist.image.repository` | Location of the Machinist image | platformatic/machinist | No |
 | `services.machinist.image.tag` | The tag to deploy | latest | No |
 | `services.machinist.image.pullPolicy` | When to pull an image update | IfNotPresent | No |
-| `services.machinist.log_level` | The level to log ICC services | warn | No |
+| `services.machinist.log_level` | The level to log Machinist services | warn | No |
 
 #### Features
 | Name | Description | Default Value | Required |
 | --- | --- | --- | --- |
 | `services.machinist.features.event_export.enable` | Export Kubernetes events to Intelligent Command Center | false | No |
+
+### Workflow
+
+The Workflow Service is a durable workflow execution engine. It is **disabled by
+default** (`services.workflow.deploy: false`). When enabled, ICC is wired to it
+via `PLT_WORKFLOW_URL` and the `platformatic` ServiceAccount is granted RBAC to
+validate Kubernetes ServiceAccount tokens through the TokenReview API.
+
+| Name | Description | Default Value | Required |
+| --- | --- | --- | --- |
+| `services.workflow.name` | Name of all related resources | workflow | No |
+| `services.workflow.deploy` | Deploy the Workflow Service | false | No |
+| `services.workflow.monitor.enable` | Monitor via Prometheus | true | No |
+| `services.workflow.image.repository` | Location of the Workflow image | platformatic/workflow | No |
+| `services.workflow.image.tag` | The tag to deploy | latest | No |
+| `services.workflow.image.pullPolicy` | When to pull an image update | IfNotPresent | No |
+| `services.workflow.log_level` | The level to log Workflow services | warn | No |
+
+### eBPF Sandbox
+
+The eBPF Sandbox Server provides per-node, eBPF-based sandbox enforcement. It is
+deployed as a **DaemonSet** (one Pod per node) and is **disabled by default**
+(`services.ebpfSandbox.deploy: false`).
+
+> [!WARNING]
+> The sandbox Pod runs **privileged** with `hostPID` and the `SYS_ADMIN`, `BPF`,
+> `NET_ADMIN`, and `SYS_RESOURCE` capabilities, and mounts the host `cgroup`,
+> `bpf`, `debugfs`, and `tracefs` filesystems. The node kernel must support BPF
+> LSM. Set `disableEBPFPolicies: true` for environments without BPF LSM (e.g.
+> macOS development clusters).
+
+| Name | Description | Default Value | Required |
+| --- | --- | --- | --- |
+| `services.ebpfSandbox.name` | Name of all related resources | ebpf-sandbox | No |
+| `services.ebpfSandbox.deploy` | Deploy the eBPF Sandbox Server | false | No |
+| `services.ebpfSandbox.monitor.enable` | Monitor via Prometheus ServiceMonitor | true | No |
+| `services.ebpfSandbox.image.repository` | Location of the eBPF Sandbox image | platformatic/ebpf-sandbox-server | No |
+| `services.ebpfSandbox.image.tag` | The tag to deploy | latest | No |
+| `services.ebpfSandbox.image.pullPolicy` | When to pull an image update | IfNotPresent | No |
+| `services.ebpfSandbox.log_level` | The level to log the sandbox server | info | No |
+| `services.ebpfSandbox.socketPath` | Unix socket path for sandbox communication | /var/run/platformatic-sandbox/sandbox.sock | No |
+| `services.ebpfSandbox.metricsPort` | Metrics endpoint port | 8443 | No |
+| `services.ebpfSandbox.bpfDir` | Directory containing compiled BPF programs | /app/bpf | No |
+| `services.ebpfSandbox.cgroupBase` | Base cgroup path for Platformatic workloads | /sys/fs/cgroup/platformatic | No |
+| `services.ebpfSandbox.disableEBPFPolicies` | Disable eBPF policy enforcement (uses NoopEbpfManager) | false | No |
 
 ## Installation
 
@@ -208,5 +272,8 @@ helm install platformatic oci://ghcr.io/platformatic/helm \
 
 ## Notes
 
+* Kubernetes >= 1.30 is required (enforced by `kubeVersion` in `Chart.yaml`).
+  Skew protection additionally relies on Envoy Gateway 1.4.x, whose supported
+  Kubernetes range starts at 1.30.
 * Only Helm CLI >= v3.13.2 is supported
 * Available versions are found in the [container repository for our helm chart](https://github.com/orgs/platformatic/packages/container/package/helm)
