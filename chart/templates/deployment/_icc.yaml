@@ -187,7 +187,7 @@ spec:
             - name: PLT_METRICS_TIME_RANGE
               value: "60"
             - name: PLT_METRICS_PROMETHEUS_URL
-              value: "{{ .prometheus.url }}"
+              value: "{{ required "services.icc.prometheus.url is required" .prometheus.url }}"
             - name: PLT_SCALER_POD_MIN_LABEL
               value: "{{ $.Values.watt.scaling.labels.minimum_pods.name }}"
             - name: PLT_SCALER_POD_MIN_DEFAULT_VALUE
@@ -312,6 +312,9 @@ spec:
             - name: http
               protocol: TCP
               containerPort: {{ $target_port }}
+            - name: metrics
+              protocol: TCP
+              containerPort: 9090
           livenessProbe:
             httpGet:
               path: /api/status

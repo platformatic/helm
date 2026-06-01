@@ -1,11 +1,11 @@
 {{- range $service, $val := .Values.services }}
-{{- if .deploy }}
+{{- if and .deploy (ne $service "ebpfSandbox") }}
 ---
 apiVersion: v1
 kind: Pod
 metadata:
   name: "{{ .name }}-test"
-  namespace: {{ $.Values.namespace | default "platformatic" }}
+  namespace: {{ include "install.namespace" $ }}
   labels:
     {{- include "application.labels" $ | nindent 4 }}
     {{- include "application.selectorLabels" (merge (dict "name" .name) $) | nindent 4 }}
@@ -13,10 +13,10 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: wget
+    - name: connection-test
       image: busybox
-      command: ['wget']
-      args: ['{{ .name }}:{{- include "service.port" $ }}']
+      command: ['nc']
+      args: ['-z', '-w3', '{{ .name }}', '{{ include "service.port" $ }}']
   restartPolicy: Never
 {{- end }}
 {{- end }}
