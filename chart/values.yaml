@@ -83,6 +83,7 @@ services:
         enable: false
       skew_protection:
         enable: false
+        manage_mode: false                   # Grant ICC create/update/patch on Deployments+Services (manage-mode deploys). Off = least privilege
         auto_cleanup: false                  # Delete expired Deployment and Service resources
         http_grace_period_ms: 1800000        # Min time to keep HTTP version draining (30 min)
         http_max_alive_ms: 86400000          # Hard deadline for HTTP versions (24h)
