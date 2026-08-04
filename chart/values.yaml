@@ -93,18 +93,23 @@ services:
         check_interval_ms: 60000             # How often to check draining versions (1 min)
         traffic_window_ms: 1800000           # Time window for traffic activity tracking (30 min)
         cookie_max_age: 43200                # Max age for session cookie in seconds (12h)
-        # How clients carry their version: `cookie` (the gateway sets __plt_dpl)
-        # or `query` (a ?dpl baked into the built assets). Cluster-wide, because
-        # whether builds bake it is a property of your build pipeline. A version
-        # not built with its own id keeps the cookie automatically, so switching
-        # cannot silently unprotect anything.
+        # How clients carry their version: `query` (the default -- a ?dpl baked
+        # into the built assets) or `cookie` (the gateway sets __plt_dpl).
+        # Cluster-wide, because whether builds bake the id is a property of your
+        # build pipeline, not of an individual app.
         #
-        # `query` requires a gateway controller that implements queryParams
+        # The two are strictly exclusive and there is NO fallback between them.
+        # In query mode a version whose image was not built with its own id as
+        # PLT_DEPLOYMENT_ID gets no pinning rule at all -- it is unprotected, not
+        # silently downgraded to a cookie. Set `cookie` if your builds do not
+        # pass PLT_DEPLOYMENT_ID yet.
+        #
+        # `query` also requires a gateway controller that implements queryParams
         # matching. That is Extended support in the Gateway API, not Core, so a
         # fully conformant controller may lack it -- check that yours reports the
         # HTTPRouteQueryParamMatching conformance feature. Verified on Envoy
         # Gateway v1.4.2. Cookie mode has no such prerequisite.
-        routing_mode: cookie
+        routing_mode: query
 
     # Available levels: debug, info, warn, error
     log_level: warn
