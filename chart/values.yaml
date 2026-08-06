@@ -95,8 +95,10 @@ services:
         cookie_max_age: 43200                # Max age for session cookie in seconds (12h)
         # How clients carry their version: `query` (the default -- a ?dpl baked
         # into the built assets) or `cookie` (the gateway sets __plt_dpl).
-        # Cluster-wide, because whether builds bake the id is a property of your
-        # build pipeline, not of an individual app.
+        # This is the cluster default; an application can override it in ICC.
+        # It exists because both reasons for needing `cookie` -- a gateway that
+        # cannot match query params, or a build pipeline that cannot stamp the
+        # id -- are usually properties of the cluster rather than of one app.
         #
         # The two are strictly exclusive and there is NO fallback between them.
         # In query mode a version whose image was not built with its own id as
