@@ -109,7 +109,7 @@ services:
         # fully conformant controller may lack it -- check that yours reports the
         # HTTPRouteQueryParamMatching conformance feature. Verified on Envoy
         # Gateway v1.4.2. Cookie mode has no such prerequisite.
-        routing_mode: query
+        default_routing_mode: query
 
     # Available levels: debug, info, warn, error
     log_level: warn

@@ -139,8 +139,8 @@ spec:
             - name: PLT_SKEW_COOKIE_MAX_AGE
               value: "{{ . }}"
             {{- end }}
-            {{- with dig "features" "skew_protection" "routing_mode" nil . }}
-            - name: PLT_SKEW_ROUTING_MODE
+            {{- with dig "features" "skew_protection" "default_routing_mode" nil . }}
+            - name: PLT_SKEW_DEFAULT_ROUTING_MODE
               value: "{{ . }}"
             {{- end }}
             - name: DEV_K8S
