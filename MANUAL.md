@@ -9,7 +9,11 @@ A short guide to installing ICC on Kubernetes with this Helm chart.
 - PostgreSQL reachable from the cluster (one server; ICC uses several databases
   on it, listed in section 2).
 - Valkey (or Redis), reachable from the cluster.
-- Prometheus, reachable from the cluster.
+- Prometheus, reachable from the cluster. It must scrape kubelet
+  `/metrics/cadvisor` and kube-state-metrics so ICC can read container resource
+  usage, requests, limits, and Pod labels. kube-state-metrics must export the
+  `platformatic.dev/monitor` Pod label.
+- A Kubernetes resource metrics API (`metrics.k8s.io`) for the ICC HPA.
 - Prometheus Operator CRDs (`PodMonitor`, `ServiceMonitor`) installed. The
   chart renders both by default; to install without them, disable the monitors
   (`watt.monitor.enable` and the per-service `monitor.enable`).
@@ -151,7 +155,8 @@ kubectl port-forward -n platformatic svc/icc 8080:80
 ```sh
 helm upgrade platformatic oci://ghcr.io/platformatic/helm \
   --version "^4.1.0" -n platformatic \
-  -f my-values.yaml -f my-secrets.yaml
+  -f my-values.yaml -f my-secrets.yaml \
+  --wait --timeout 10m
 
 helm uninstall platformatic -n platformatic
 ```
@@ -169,6 +174,10 @@ helm uninstall platformatic -n platformatic
   capabilities) is below 1.30. Upgrade the cluster.
 - `no matches for kind "PodMonitor"` (or `"ServiceMonitor"`): the Prometheus
   Operator CRDs are missing. Install them, or disable the monitors (section 1).
+- ICC CPU metrics are empty or zero: confirm Prometheus contains
+  `container_cpu_usage_seconds_total`, `kube_pod_container_resource_limits` or
+  `kube_pod_container_resource_requests`, and
+  `kube_pod_labels{label_platformatic_dev_monitor="prometheus"}`.
 - ICC pod not ready: check `kubectl logs -n platformatic deploy/icc`; usually
   the database, Valkey, or Prometheus URL is unreachable.
 
