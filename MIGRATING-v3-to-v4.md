@@ -14,6 +14,9 @@ Test the upgrade in a non-production cluster first.
 - Kubernetes 1.30 or newer. The chart refuses to install on older clusters.
 - Helm 3.13.2 or newer.
 - PostgreSQL, Valkey or Redis, and Prometheus reachable from the ICC Pod.
+  Prometheus must scrape kubelet `/metrics/cadvisor` and kube-state-metrics.
+  kube-state-metrics must export the `platformatic.dev/monitor` Pod label.
+- A Kubernetes resource metrics API (`metrics.k8s.io`) for the ICC HPA.
 - A replacement for any Ingress or persistent storage created by chart v3. See
   [Resources removed or changed](#resources-removed-or-changed).
 
@@ -114,8 +117,11 @@ services:
 
     scaler:
       algorithm_version: v1
-      # Preserve the v3 values. The v3 defaults were 300 and 60.
+      # 300 preserves the chart v3 behavior. Chart v4 defaults to 15.
+      # With scaler v1, scale-up is blocked for this period after a scale
+      # operation; scale-down uses a shorter derived cooldown (60-180s).
       cooldown: 300
+      # Preserve the chart v3 default. Chart v4 also defaults to 60.
       periodic_trigger: 60
 
   machinist:
@@ -281,7 +287,8 @@ helm upgrade "$RELEASE" oci://ghcr.io/platformatic/helm \
 helm upgrade "$RELEASE" oci://ghcr.io/platformatic/helm \
   --version "$CHART_VERSION" \
   --namespace "$RELEASE_NAMESPACE" \
-  -f v4-values.yaml
+  -f v4-values.yaml \
+  --wait --timeout 10m
 ```
 
 Review the dry-run for unexpected namespace changes. Compare it with the saved
@@ -294,6 +301,24 @@ v3 manifest to confirm the resources Helm will remove. Do not add
 kubectl rollout status deployment/icc --namespace platformatic
 kubectl rollout status deployment/machinist --namespace platformatic
 helm test "$RELEASE" --namespace "$RELEASE_NAMESPACE"
+```
+
+Run these queries in Prometheus. Each must return a value greater than zero:
+
+```promql
+count(container_cpu_usage_seconds_total{container!="POD"})
+```
+
+```promql
+count(
+  kube_pod_container_resource_limits{resource="cpu", unit="core"}
+  or
+  kube_pod_container_resource_requests{resource="cpu", unit="core"}
+)
+```
+
+```promql
+count(kube_pod_labels{label_platformatic_dev_monitor="prometheus"})
 ```
 
 Then confirm:
