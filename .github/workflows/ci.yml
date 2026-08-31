@@ -52,6 +52,9 @@ jobs:
       - name: 'Database URL compatibility'
         run: bash test/database-urls.sh
 
+      - name: 'Autoscaler unit configuration'
+        run: bash test/autoscaler-unit.sh
+
       - name: 'Install kubeconform'
         run: |
           curl -sSL -o /tmp/kubeconform.tar.gz \

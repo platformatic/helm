@@ -93,6 +93,7 @@ production-ready set of values except for the `secrets` portion.
 | `services.icc.image.pullPolicy` | When to pull an image update | IfNotPresent | No |
 | `services.icc.log_level` | The level to log ICC services | warn | No |
 | `services.icc.public_url` | The URL to access Intelligent Command Center (Note: ingress and domain must be configured by the user | "" | Yes |
+| `services.icc.autoscaler_unit` | Singular word used by the UI for the autoscaler unit | pod | No |
 | `services.icc.database_url` | Base database connection string used when an exact URL is not set | "" | Conditional |
 | `services.icc.database_urls` | Exact connection strings keyed by ICC database service | {} | Conditional |
 | `services.icc.valkey.apps_url` | Valkey connection string | "" | Yes |

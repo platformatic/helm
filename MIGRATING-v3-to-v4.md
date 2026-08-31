@@ -306,7 +306,7 @@ Use the same Helm release name and release namespace as v3. Pin the exact v4
 chart version that you tested.
 
 ```sh
-CHART_VERSION=4.2.0
+CHART_VERSION=4.3.0
 
 helm upgrade "$RELEASE" oci://ghcr.io/platformatic/helm \
   --version "$CHART_VERSION" \
