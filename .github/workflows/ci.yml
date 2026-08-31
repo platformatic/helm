@@ -11,7 +11,7 @@ env:
   # Values that are marked Required in the chart. Without them the chart fails
   # fast with a clear `required` error, so CI must provide dummies.
   REQUIRED_VALUES: >-
-    --set services.icc.database_url=postgres://user:pass@db:5432/icc
+    --set services.icc.database_url=postgres://user:pass@db:5432
     --set services.icc.valkey.apps_url=redis://valkey:6379/0
     --set services.icc.valkey.icc_url=redis://valkey:6379/1
     --set services.icc.prometheus.url=http://prometheus:9090
@@ -48,6 +48,9 @@ jobs:
             exit 1
           fi
           echo "OK: chart fails fast when required values are missing"
+
+      - name: 'Database URL compatibility'
+        run: bash test/database-urls.sh
 
       - name: 'Install kubeconform'
         run: |

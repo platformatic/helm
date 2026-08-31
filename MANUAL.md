@@ -64,6 +64,13 @@ be accessible to the user in `database_url`. ICC applies its schema migrations
 automatically when it starts. A `workflow` database is only needed if you
 deploy the optional workflow service.
 
+For an existing installation with different database names or credentials, set
+the complete URLs under `services.icc.database_urls` instead. Supported keys
+are `activities`, `cluster_manager`, `cold_storage`, `compliance`,
+`control_plane`, `cron`, `scaler`, `trafficante`, `traffic_inspector`, and
+`user_manager`. Exact URLs take precedence over `database_url`. See
+`MIGRATING-v3-to-v4.md` for the v3 mapping.
+
 For Enterprise installs, also add the registry credentials and the Enterprise
 image references. Without the `image` overrides the chart pulls the public
 Docker Hub images and the pull secret has no effect. Use the repositories and
@@ -112,7 +119,7 @@ EOF
 
 ```sh
 helm install platformatic oci://ghcr.io/platformatic/helm \
-  --version "^4.1.0" \
+  --version "^4.2.0" \
   --namespace platformatic --create-namespace \
   -f my-values.yaml -f my-secrets.yaml
 ```
@@ -154,7 +161,7 @@ kubectl port-forward -n platformatic svc/icc 8080:80
 
 ```sh
 helm upgrade platformatic oci://ghcr.io/platformatic/helm \
-  --version "^4.1.0" -n platformatic \
+  --version "^4.2.0" -n platformatic \
   -f my-values.yaml -f my-secrets.yaml \
   --wait --timeout 10m
 
@@ -168,8 +175,9 @@ helm uninstall platformatic -n platformatic
 
 ## Troubleshooting
 
-- `services.icc.database_url is required` (or valkey / prometheus): a required
-  value is missing from `my-values.yaml`. See section 2.
+- `services.icc.database_urls.<name> or services.icc.database_url is required`
+  (or valkey / prometheus): a required value is missing from `my-values.yaml`.
+  See section 2.
 - `chart requires kubeVersion: >= 1.30.0-0`: your cluster (or Helm's default
   capabilities) is below 1.30. Upgrade the cluster.
 - `no matches for kind "PodMonitor"` (or `"ServiceMonitor"`): the Prometheus

@@ -137,10 +137,26 @@ services:
     #   https://example.com/icc
     #public_url: ""
 
-    # The URL to access the ICC database
-    # Makes sure to include any required credentials and/or port number
-    # Required: must be set at install time
+    # Base URL used to derive all ICC database URLs. Do not include a database
+    # name or trailing slash. Required unless all required exact URLs are set.
     database_url: ""
+
+    # Exact URLs for installations with separate database credentials or names.
+    # An exact URL takes precedence over database_url. traffic_inspector falls
+    # back to the trafficante exact URL when it is not set.
+    #database_urls:
+    #  activities: ""
+    #  cluster_manager: ""
+    #  cold_storage: ""
+    #  compliance: ""
+    #  control_plane: ""
+    #  cron: ""
+    #  scaler: ""
+    #  trafficante: ""
+    #  traffic_inspector: ""
+    #  user_manager: ""
+    #  workflow: "" # Required only when services.workflow.deploy is true
+    database_urls: {}
 
     # URLs to valkey for ICC caching systems
     # Required: both must be set at install time

@@ -76,8 +76,19 @@ services:
     deploy: true
     public_url: https://icc.example.com
 
-    # Base PostgreSQL URL without a database name.
-    database_url: postgres://USER:PASSWORD@HOST:5432
+    # Preserve the complete URLs from the v3 ICC secrets. Database names and
+    # credentials do not need to change. See the PostgreSQL mapping below.
+    database_urls:
+      activities: postgres://ACTIVITIES_USER:PASSWORD@HOST:5432/ACTIVITIES_DB
+      cluster_manager: postgres://CLUSTER_MANAGER_USER:PASSWORD@HOST:5432/CLUSTER_MANAGER_DB
+      cold_storage: postgres://COLD_STORAGE_USER:PASSWORD@HOST:5432/COLD_STORAGE_DB
+      compliance: postgres://COMPLIANCE_USER:PASSWORD@HOST:5432/COMPLIANCE_DB
+      control_plane: postgres://CONTROL_PLANE_USER:PASSWORD@HOST:5432/CONTROL_PLANE_DB
+      cron: postgres://CRON_USER:PASSWORD@HOST:5432/CRON_DB
+      scaler: postgres://SCALER_USER:PASSWORD@HOST:5432/SCALER_DB
+      trafficante: postgres://TRAFFICANTE_USER:PASSWORD@HOST:5432/TRAFFICANTE_DB
+      traffic_inspector: postgres://TRAFFIC_INSPECTOR_USER:PASSWORD@HOST:5432/TRAFFIC_INSPECTOR_DB
+      user_manager: postgres://USER_MANAGER_USER:PASSWORD@HOST:5432/USER_MANAGER_DB
 
     valkey:
       apps_url: redis://VALKEY_HOST:6379/0
@@ -185,18 +196,37 @@ one login method must be enabled for users to sign in.
 
 ### PostgreSQL
 
-v3 accepted a complete URL for each ICC database. v4 accepts one URL prefix and
-appends the database name for each ICC service. For example:
+Preserve the complete v3 database URLs under `database_urls`. This keeps the
+existing database names, users, passwords, and permissions:
+
+| v3 `services.icc.secrets` key | v4 `services.icc.database_urls` key |
+| --- | --- |
+| `PLT_ACTIVITIES_DATABASE_URL` | `activities` |
+| `PLT_CLUSTER_MANAGER_DATABASE_URL` | `cluster_manager` |
+| `PLT_COLD_STORAGE_DATABASE_URL` | `cold_storage` |
+| `PLT_COMPLIANCE_DATABASE_URL` | `compliance` |
+| `PLT_CONTROL_PLANE_DATABASE_URL` | `control_plane` |
+| `PLT_CRON_DATABASE_URL` | `cron` |
+| `PLT_SCALER_DATABASE_URL` | `scaler` |
+| `PLT_TRAFFICANTE_DATABASE_URL` | `trafficante` |
+| `PLT_TRAFFIC_INSPECTOR_DATABASE_URL` | `traffic_inspector` |
+| `PLT_USER_MANAGER_DATABASE_URL` | `user_manager` |
+
+If Traffic Inspector and Trafficante used the same URL in v3, omit
+`traffic_inspector`; it falls back to the `trafficante` URL.
+
+Installations where every database already uses one role and the standard v4
+database names may use a single URL prefix instead:
 
 ```yaml
 database_url: postgres://icc:secret@postgres.example.com:5432
 ```
 
-The base URL must not contain a database name or a trailing slash. The required
-databases are `activities`, `risk_cold_storage`, `control_plane`, `cron`,
-`scaler`, `trafficante`, `user_manager`, `cluster_manager`, and `compliance`.
-They must exist and be accessible to the configured role. ICC applies its schema
-migrations automatically when it starts. The `workflow` database is not used
+The base URL must not contain a database name or trailing slash. The chart
+appends `activities`, `risk_cold_storage`, `control_plane`, `cron`, `scaler`,
+`trafficante`, `user_manager`, `cluster_manager`, and `compliance`. Exact URLs
+take precedence over the base URL, so both forms can be combined. ICC applies
+schema migrations automatically when it starts. No Workflow URL is required
 while `services.workflow.deploy` is `false`.
 
 ### Valkey and login
@@ -276,7 +306,7 @@ Use the same Helm release name and release namespace as v3. Pin the exact v4
 chart version that you tested.
 
 ```sh
-CHART_VERSION=4.1.0
+CHART_VERSION=4.2.0
 
 helm upgrade "$RELEASE" oci://ghcr.io/platformatic/helm \
   --version "$CHART_VERSION" \
