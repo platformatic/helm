@@ -159,6 +159,8 @@ spec:
               value: "{{ .public_url }}"
             - name: VITE_TERMS_VERSION
               value: "1"
+            - name: VITE_AUTOSCALER_UNIT
+              value: "{{ dig "autoscaler_unit" "pod" . | toString }}"
 
             # User manager
             - name: PLT_USER_MANAGER_SESSION_SECRET_KEY

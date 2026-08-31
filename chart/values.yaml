@@ -137,6 +137,9 @@ services:
     #   https://example.com/icc
     #public_url: ""
 
+    # The word the UI uses for the autoscaler unit (e.g. "pod", "task")
+    #autoscaler_unit: "pod"
+
     # Base URL used to derive all ICC database URLs. Do not include a database
     # name or trailing slash. Required unless all required exact URLs are set.
     database_url: ""
