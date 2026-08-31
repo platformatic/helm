@@ -1,0 +1,18 @@
+services:
+  icc:
+    database_urls:
+      activities: postgresql://activities_user:secret@db:5432/plt_activities
+      cluster_manager: postgresql://cluster_manager_user:secret@db:5432/plt_cluster_manager
+      cold_storage: postgresql://cold_storage_user:secret@db:5432/plt_cold_storage
+      compliance: postgresql://compliance_user:secret@db:5432/plt_compliance
+      control_plane: postgresql://control_plane_user:secret@db:5432/plt_control_plane
+      cron: postgresql://cron_user:secret@db:5432/plt_cron
+      scaler: postgresql://scaler_user:secret@db:5432/plt_scaler
+      trafficante: postgresql://trafficante_user:secret@db:5432/plt_trafficante
+      traffic_inspector: postgresql://traffic_inspector_user:secret@db:5432/plt_traffic_inspector
+      user_manager: postgresql://user_manager_user:secret@db:5432/plt_user_manager
+    valkey:
+      apps_url: redis://valkey:6379/0
+      icc_url: redis://valkey:6379/1
+    prometheus:
+      url: http://prometheus:9090

@@ -96,8 +96,38 @@ platformatic
 NodePort
 {{- end }}
 
-{{/* ICC databases */}}
-{{/* Using trafficante database name so that we an safely upgrade existing users */}}
+{{/* ICC database connection names */}}
 {{- define "service.icc.databases" -}}
-activities risk_cold_storage control_plane cron scaler trafficante user_manager cluster_manager compliance workflow
+activities cluster_manager cold_storage compliance control_plane cron scaler trafficante traffic_inspector user_manager
+{{- end }}
+
+{{/* Database name appended to the base URL when no exact URL is configured */}}
+{{- define "service.icc.databaseName" -}}
+{{- $database := index . 0 -}}
+{{- if eq $database "cold_storage" -}}
+risk_cold_storage
+{{- else if eq $database "traffic_inspector" -}}
+trafficante
+{{- else -}}
+{{- $database -}}
+{{- end -}}
+{{- end }}
+
+{{/* Resolve an exact database URL, falling back to the shared base URL */}}
+{{- define "service.icc.databaseUrl" -}}
+{{- $root := index . 0 -}}
+{{- $database := index . 1 -}}
+{{- $urls := $root.Values.services.icc.database_urls | default (dict) -}}
+{{- $url := get $urls $database -}}
+{{- if and (not $url) (eq $database "traffic_inspector") -}}
+{{- $url = get $urls "trafficante" -}}
+{{- end -}}
+{{- if $url -}}
+{{- $url -}}
+{{- else -}}
+{{- $message := printf "services.icc.database_urls.%s or services.icc.database_url is required" $database -}}
+{{- $base := required $message $root.Values.services.icc.database_url -}}
+{{- $name := include "service.icc.databaseName" (list $database) -}}
+{{- printf "%s/%s" $base $name -}}
+{{- end -}}
 {{- end }}
