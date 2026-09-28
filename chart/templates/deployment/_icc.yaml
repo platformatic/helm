@@ -109,6 +109,8 @@ spec:
               value: "{{ .features.scaler_trends_learning.enable | default false | toString }}"
             - name: PLT_FEATURE_SKEW_PROTECTION
               value: "{{ .features.skew_protection.enable | default false | toString }}"
+            - name: PLT_FEATURE_INVITE_USERS
+              value: '{{ dig "features" "invite_users" "enable" false . | toString }}'
             - name: PLT_SKEW_AUTO_CLEANUP
               value: "{{ dig "features" "skew_protection" "auto_cleanup" false . | toString }}"
             {{- with dig "features" "skew_protection" "http_grace_period_ms" nil . }}

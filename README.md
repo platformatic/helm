@@ -118,6 +118,7 @@ production-ready set of values except for the `secrets` portion.
 | `services.icc.features.risk_service_dump.enable` | Enable long-term storage for the risk service | false | No |
 | `services.icc.features.ffc.enable` | Fussion, Fission & Cascade | false | No |
 | `services.icc.features.scaler_trends_learning.enable` | Enable scaler trend learning | false | No |
+| `services.icc.features.invite_users.enable` | Allow super-admins to invite users by email from Settings > Users | false | No |
 | `services.icc.features.skew_protection.enable` | Enable version skew protection via Gateway API (opt-in, see [Requirements](#gateway-api-skew-protection)) | false | No |
 | `services.icc.features.skew_protection.auto_cleanup` | Delete expired Deployment and Service resources | false | No |
 | `services.icc.features.skew_protection.http_grace_period_ms` | Min time to keep an HTTP version draining | 1800000 | No |

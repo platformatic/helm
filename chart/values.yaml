@@ -81,6 +81,8 @@ services:
         enable: false
       scaler_trends_learning:
         enable: false
+      invite_users:
+        enable: false                        # Show "Invite users" in Settings > Users
       deployer:
         enable: false                        # ICC deployer creates workloads via the deploy API (Deployments/Services/pull Secrets). Off = observe-only, least privilege
       skew_protection:
