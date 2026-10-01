@@ -55,6 +55,9 @@ jobs:
       - name: 'Autoscaler unit configuration'
         run: bash test/autoscaler-unit.sh
 
+      - name: 'Invite users feature flag'
+        run: bash test/invite-users.sh
+
       - name: 'Install kubeconform'
         run: |
           curl -sSL -o /tmp/kubeconform.tar.gz \
