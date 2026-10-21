@@ -277,6 +277,8 @@ spec:
                   key: "{{ . }}"
             {{- end }}
 
+            {{- include "service.icc.notificationsEnv" .notifications | nindent 12 }}
+
             {{- with .elasticache }}
             - name: PLT_APPLICATIONS_CACHE_PROVIDER
               value: elasticache
