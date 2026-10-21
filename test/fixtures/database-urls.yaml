@@ -7,6 +7,7 @@ services:
       compliance: postgresql://compliance_user:secret@db:5432/plt_compliance
       control_plane: postgresql://control_plane_user:secret@db:5432/plt_control_plane
       cron: postgresql://cron_user:secret@db:5432/plt_cron
+      notifications: postgresql://notifications_user:secret@db:5432/plt_notifications
       scaler: postgresql://scaler_user:secret@db:5432/plt_scaler
       trafficante: postgresql://trafficante_user:secret@db:5432/plt_trafficante
       traffic_inspector: postgresql://traffic_inspector_user:secret@db:5432/plt_traffic_inspector

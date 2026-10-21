@@ -98,7 +98,7 @@ NodePort
 
 {{/* ICC database connection names */}}
 {{- define "service.icc.databases" -}}
-activities cluster_manager cold_storage compliance control_plane cron scaler trafficante traffic_inspector user_manager
+activities cluster_manager cold_storage compliance control_plane cron notifications scaler trafficante traffic_inspector user_manager
 {{- end }}
 
 {{/* Database name appended to the base URL when no exact URL is configured */}}

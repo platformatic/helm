@@ -152,6 +152,45 @@ Configure how the Intelligent Command Center can be accessed
 | `services.icc.login_methods.github.client_secret` | Required when Github is enabled | "" | No |
 | `services.icc.login_methods.github.valid_emails` | Required when Github is enabled | "" | No |
 
+#### Notifications
+
+Configure `services.icc.notifications` to use email, Slack, or both. Delivery is
+disabled by default; `enable: false` preserves configuration while preventing
+all sends. This requires an ICC version with the notifications service.
+
+```yaml
+services:
+  icc:
+    notifications:
+      enable: false
+      providers: [email, slack]
+      minimum_level: info
+      excluded_services: []
+      email:
+        from: icc@example.com
+        recipients: [developer@example.com]
+        smtp:
+          host: smtp.example.com
+          port: 587
+          secure: false
+          require_tls: true
+          user: ""
+          password: ""
+      slack:
+        token: ""
+        channel: ""
+```
+
+Supply credentials through private Helm values. The chart stores SMTP credentials
+and the Slack token in the `icc-notifications` Kubernetes Secret and references
+them from ICC's environment. The database URL follows `services.icc.database_url`
+or an explicit `services.icc.database_urls.notifications` override. Provision the
+`notifications` database before starting ICC.
+
+Provider selection, recipients, channel, minimum level, and exclusions seed the
+database only once. Update existing settings through ICC's settings API. The
+enable flag and credentials remain environment-only and take effect on restart.
+
 ### Machinist
 
 | Name | Description | Default Value | Required |

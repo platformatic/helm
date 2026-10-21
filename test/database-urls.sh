@@ -91,7 +91,7 @@ migration_manifest=$(helm template database-migration "$CHART_DIR" \
 helm lint "$CHART_DIR" -f "$FIXTURE" >/dev/null
 
 for database in \
-  activities cluster_manager cold_storage compliance control_plane cron scaler \
+  activities cluster_manager cold_storage compliance control_plane cron notifications scaler \
   trafficante traffic_inspector user_manager; do
   expected=$(awk -v key="$database:" '$1 == key { print $2; exit }' "$FIXTURE")
   assert_secret_value "$migration_manifest" "$database" "$expected"

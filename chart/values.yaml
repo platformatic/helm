@@ -118,6 +118,26 @@ services:
     # Available levels: debug, info, warn, error
     log_level: warn
 
+    # Notification settings seed ICC's database once. Credentials remain environment-only.
+    notifications:
+      enable: false
+      providers: []
+      minimum_level: info
+      excluded_services: []
+      email:
+        from: ""
+        recipients: []
+        smtp:
+          host: ""
+          port: 587
+          secure: false
+          require_tls: true
+          user: ""
+          password: ""
+      slack:
+        token: ""
+        channel: ""
+
     # Supported login methods
     # Change `enable` to `true` to use a method
     # At least one method must be enabled
@@ -155,6 +175,7 @@ services:
     #  cold_storage: ""
     #  compliance: ""
     #  control_plane: ""
+    #  notifications: ""
     #  cron: ""
     #  scaler: ""
     #  trafficante: ""
