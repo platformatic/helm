@@ -58,17 +58,17 @@ services:
 ```
 
 Before installing, create these databases on the PostgreSQL server:
-`activities`, `risk_cold_storage`, `control_plane`, `cron`, `scaler`,
-`trafficante`, `user_manager`, `cluster_manager`, and `compliance`. They must
-be accessible to the user in `database_url`. ICC applies its schema migrations
-automatically when it starts. A `workflow` database is only needed if you
-deploy the optional workflow service.
+`activities`, `risk_cold_storage`, `control_plane`, `cron`, `notifications`,
+`scaler`, `trafficante`, `user_manager`, `cluster_manager`, and `compliance`.
+They must be accessible to the user in `database_url`. ICC applies its schema
+migrations automatically when it starts. A `workflow` database is only needed
+if you deploy the optional workflow service.
 
 For an existing installation with different database names or credentials, set
 the complete URLs under `services.icc.database_urls` instead. Supported keys
 are `activities`, `cluster_manager`, `cold_storage`, `compliance`,
-`control_plane`, `cron`, `scaler`, `trafficante`, `traffic_inspector`, and
-`user_manager`. Exact URLs take precedence over `database_url`. See
+`control_plane`, `cron`, `notifications`, `scaler`, `trafficante`,
+`traffic_inspector`, and `user_manager`. Exact URLs take precedence over `database_url`. See
 `MIGRATING-v3-to-v4.md` for the v3 mapping.
 
 For Enterprise installs, also add the registry credentials and the Enterprise
