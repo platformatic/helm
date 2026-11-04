@@ -1,0 +1,106 @@
+name: 'Publish'
+
+# Releases the chart: bumps the version in Chart.yaml, commits and tags it on main, and pushes the chart to
+# oci://ghcr.io/platformatic/helm. A version is published once: the run fails if it already exists in the registry
+# or as a tag, so a published version can never be overwritten.
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+env:
+  HELM_DIRECTORY: './chart'
+  HELM_NAME: 'helm'
+  REGISTRY_URL: 'ghcr.io/platformatic'
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    name: 'Publish'
+    needs: [ci]
+    runs-on: 'ubuntu-latest'
+    environment: production
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Install Helm'
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.13.2'
+
+      - name: 'Login to GHCR'
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: 'Compute the version'
+        id: version
+        run: |
+          CURRENT=$(yq -r .version ${{ env.HELM_DIRECTORY }}/Chart.yaml)
+          IFS=. read -r MAJOR MINOR PATCH <<< "${CURRENT%%-*}"
+          case "${{ inputs.bump }}" in
+            major) VERSION="$((MAJOR + 1)).0.0" ;;
+            minor) VERSION="${MAJOR}.$((MINOR + 1)).0" ;;
+            patch) VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))" ;;
+          esac
+          echo "Releasing ${VERSION} (from ${CURRENT}, ${{ inputs.bump }} bump)"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: 'Refuse a version that already exists'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if git rev-parse -q --verify "refs/tags/v${VERSION}" > /dev/null; then
+            echo "::error::Tag v${VERSION} already exists"
+            exit 1
+          fi
+          if helm show chart "oci://${{ env.REGISTRY_URL }}/${{ env.HELM_NAME }}" --version "${VERSION}" > /dev/null 2>&1; then
+            echo "::error::Chart ${VERSION} is already published; a published version is never overwritten"
+            exit 1
+          fi
+
+      - name: 'Commit and tag'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          yq -i ".version = \"${VERSION}\"" ${{ env.HELM_DIRECTORY }}/Chart.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "chart: release ${VERSION}"
+          git tag -a "v${VERSION}" -m "Helm chart ${VERSION}"
+
+      - name: 'Package'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: helm package ${{ env.HELM_DIRECTORY }} --app-version "${VERSION}" --version "${VERSION}"
+
+      # Pushed before the chart: if main moved meanwhile, the push is rejected and nothing is published
+      - name: 'Push the commit and the tag'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: git push origin HEAD:main "v${VERSION}"
+
+      - name: 'Push the chart'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: helm push "${{ env.HELM_NAME }}-${VERSION}.tgz" "oci://${{ env.REGISTRY_URL }}"

@@ -329,6 +329,14 @@ URLs and no `notifications` entry, the chart refuses to render. Notifications ar
 Note: version 4.4.0 was republished on 2026-10-21 with these changes, and restored on 2026-11-04 to its content of
 2026-10-01. A 4.4.0 pulled between those dates is the same chart as 4.5.0.
 
+## Releasing
+
+Run the [Publish](.github/workflows/publish.yml) workflow from the Actions tab and choose the version bump: `patch`,
+`minor` or `major`. It runs the CI, sets the new version in `Chart.yaml`, commits and tags `v<version>` on
+`main`, and pushes the chart to `oci://ghcr.io/platformatic/helm`. Do not edit the version in `Chart.yaml` by
+hand. A version that already exists, as a tag or in the registry, is refused, so a published chart is never
+overwritten.
+
 ## Notes
 
 * Kubernetes >= 1.30 is required (enforced by `kubeVersion` in `Chart.yaml`).
