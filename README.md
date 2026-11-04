@@ -312,6 +312,23 @@ helm install platformatic oci://ghcr.io/platformatic/helm \
     --set "services.icc.login_methods.github.client_secret=$GITHUB_OAUTH_CLIENT_SECRET"
 ```
 
+## Upgrading to 4.5.0
+
+4.5.0 adds the ICC notifications service, which needs its own `notifications` database. Create it before upgrading,
+on the PostgreSQL server of `services.icc.database_url`, or add `services.icc.database_urls.notifications` when the
+installation sets exact URLs:
+
+```sql
+CREATE DATABASE notifications;
+```
+
+Without it ICC fails to start: the notifications service cannot connect and Watt stops the whole runtime. With exact
+URLs and no `notifications` entry, the chart refuses to render. Notifications are disabled by default; see
+[Notifications](#notifications) to enable them.
+
+Note: version 4.4.0 was republished on 2026-10-21 with these changes, and restored on 2026-11-04 to its content of
+2026-10-01. A 4.4.0 pulled between those dates is the same chart as 4.5.0.
+
 ## Notes
 
 * Kubernetes >= 1.30 is required (enforced by `kubeVersion` in `Chart.yaml`).
